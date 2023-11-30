@@ -11,12 +11,12 @@ import {
   RouterProvider,
 } from "react-router-dom"
 function App() {
-  const role = 1
+  const role = 4
   const router = createBrowserRouter([
     {
       element: <Layout role={role} />,
       errorElement: <PageNotFound />,
-      children: role === 0 ? guestRoutes : (role === 1 ? studentRoutes : (role === 2 ? lecturerRoutes : (role === 3 ? managementRoutes : adminRoutes)))
+      children: !role ? guestRoutes : (role === 1 ? studentRoutes : (role === 2 ? lecturerRoutes : (role === 3 ? managementRoutes : adminRoutes)))
     }
   ]);
   return (

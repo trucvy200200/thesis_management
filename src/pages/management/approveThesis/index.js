@@ -1,7 +1,7 @@
 import { Button, Box, styled } from "@mui/material";
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-// import ConfirmDelete from "../../components/common/ConfirmDelete";
+import ConfirmDelete from "../../../components/common/ConfirmDelete";
 
 const rows = [
     {
@@ -18,7 +18,7 @@ const rows = [
     },
 ];
 
-// const ConfirmApprove = styled(ConfirmDelete)({});
+const ConfirmApprove = styled(ConfirmDelete)({});
 
 function ApproveSubTopic() {
     const [isOpenModal, setIsOpenMdal] = useState(false);
@@ -26,14 +26,14 @@ function ApproveSubTopic() {
         {
             field: "id",
             headerName: "STT",
-            width: 50,
+            width: 150,
             valueGetter: (params) => {
                 return params.value;
             },
         },
-        { field: "title", headerName: "Tiêu đề", width: 150 },
-        { field: "teacher", headerName: "Giáo viên HD", width: 150 },
-        { field: "date", headerName: "Ngày đăng kí", width: 150 },
+        { field: "title", headerName: "Tiêu đề", width: 250 },
+        { field: "teacher", headerName: "Giáo viên HD", width: 250 },
+        { field: "date", headerName: "Ngày đăng kí", width: 250 },
         {
             field: "",
             headerName: "Action",
@@ -65,12 +65,12 @@ function ApproveSubTopic() {
             <Box height={300} width={"100%"} mt={4}>
                 <DataGrid rows={rows} columns={columns} />
             </Box>
-            {/* <ConfirmApprove
+            <ConfirmApprove
                 open={isOpenModal}
                 title={"Hộp thoại xác nhận"}
                 content={"Bạn có chắc chắn muốn duyệt đề tài này không?"}
                 handleClose={() => setIsOpenMdal(false)}
-            /> */}
+            />
         </div>
     );
 }

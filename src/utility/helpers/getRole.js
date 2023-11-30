@@ -1,16 +1,16 @@
 export const getRole = (value) => {
   let label;
   switch (value) {
-    case 0:
+    case 1:
       label = "Sinh viên";
       break;
-    case 1:
+    case 2:
       label = "Giáo viên";
       break;
-    case 2:
+    case 3:
       label = "Trưởng bộ môn";
       break;
-    case 3:
+    case 4:
       label = "Admin";
       break;
     default:

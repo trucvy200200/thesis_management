@@ -1,19 +1,22 @@
 import React from "react"
-
+import { Navigate } from "react-router-dom"
 // other page components...
 // const Login = React.lazy(() => import("../pages/auth/login"))
-// const Announcement = React.lazy(() => import("../../pages/Announcement/list"))
-// const Guide = React.lazy(() => import("../../pages/gueGuide"))
-// const AnnouncementDetail = React.lazy(() => import("../../pages/Announcement/detail"))
-// const LecturerList = React.lazy(() => import("../../pages/Lecturer/list"))
-
+const ManageThesis = React.lazy(() => import("../../pages/admin/manageThesis"))
+const ManagePeriod = React.lazy(() => import("../../pages/admin/managePeriod"))
+const ManageMajor = React.lazy(() => import("../../pages/admin/manageMajor"))
+const ManageRegister = React.lazy(() => import("../../pages/admin/manageRegister"))
+const ManageLecturer = React.lazy(() => import("../../pages/admin/manageLecturer"))
+const ManageStudent = React.lazy(() => import("../../pages/admin/manageStudent"))
 const routes = [
     // other mappings ...
-    // { path: "/login", element: <Login /> },
-    // { path: "/annoucement", element: <Announcement /> },
-    // { path: "/announcement/:id", element: <AnnouncementDetail /> },
-    // { path: "/guide", element: <Guide /> },
-    // { path: "/lecturer-list", element: <LecturerList /> },
+    { path: "/", element: <Navigate to="/manage-student" replace={true} /> },
+    { path: "/manage-thesis", element: <ManageThesis /> },
+    { path: "/manage-term", element: <ManagePeriod /> },
+    { path: "/manage-major", element: <ManageMajor /> },
+    { path: "/manage-register", element: <ManageRegister /> },
+    { path: "/manage-lecturer", element: <ManageLecturer /> },
+    { path: "/manage-student", element: <ManageStudent /> },
 ]
 
 export default routes

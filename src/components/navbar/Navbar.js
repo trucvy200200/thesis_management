@@ -33,7 +33,7 @@ const student_navs = [
     }
 ]
 
-const lecturer_navs = [
+const management_navs = [
     {
         id: "/register-thesis",
         value: "Đăng ký đề tài",
@@ -41,14 +41,62 @@ const lecturer_navs = [
     {
         id: "/manage-thesis",
         value: "Quản lý đề tài",
+    },
+    {
+        id: "/approve-thesis",
+        value: "Duyệt đề tài",
+    },
+    {
+        id: "/assigned-lecturer",
+        value: "Phân GVPB",
+    }
+]
 
+const admin_navs = [
+    {
+        id: "/manage-student",
+        value: "Sinh viên",
+    },
+    {
+        id: "/manage-thesis",
+        value: "Đề tài",
+    },
+    {
+        id: "/manage-term",
+        value: "Niên khóa",
+    },
+    {
+        id: "/manage-major",
+        value: "Chuyên ngành",
+    },
+    {
+        id: "/manage-register",
+        value: "Đợt đăng ký đề tài",
+    },
+    {
+        id: "/manage-lecturer",
+        value: "Giảng viên",
+    }
+]
+const lenturer_navs = [
+    {
+        id: "/register-thesis",
+        value: "Đăng ký đề tài",
+    },
+    {
+        id: "/manage-thesis",
+        value: "Quản lý đề tài",
+    },
+    {
+        id: "/assigned-thesis",
+        value: "Đề tài được phân công",
     }
 ]
 const Navbar = ({ role }) => {
     return (
         <div id="ftc-nav">
             <ul className="navbar-navb  display">
-                {role === 0 && navs.map((nav, index) => {
+                {!role && navs.map((nav, index) => {
                     return (
                         <>
                             {nav.submenu ? (
@@ -104,7 +152,63 @@ const Navbar = ({ role }) => {
                         </>
                     );
                 })}
-                {role === 2 && lecturer_navs.map((nav, index) => {
+                {role === 2 && lenturer_navs.map((nav, index) => {
+                    return (
+                        <>
+                            {nav.submenu ? (
+                                <li className="navb-item" key={index} style={{ cursor: "pointer" }}>
+                                    <a className="navb-link" >
+                                        <span>{nav.value} <ArrowDropDownIcon /></span>
+                                    </a>
+                                    <ul className="dropdown"
+                                    >
+                                        {nav.submenu.map((submenu, index) => (
+                                            <li key={index} className="dropdown-item">
+                                                <a href={submenu.url}>{submenu.title}</a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li >
+                            ) : (
+                                <li className="navb-item" key={index} >
+                                    <a href={nav.id} className="navb-link" >
+                                        <span>{nav.value}</span>
+                                    </a>
+                                </li>
+                            )
+                            }
+                        </>
+                    );
+                })}
+                {role === 3 && management_navs.map((nav, index) => {
+                    return (
+                        <>
+                            {nav.submenu ? (
+                                <li className="navb-item" key={index} style={{ cursor: "pointer" }}>
+                                    <a className="navb-link" >
+                                        <span>{nav.value} <ArrowDropDownIcon /></span>
+                                    </a>
+                                    <ul className="dropdown"
+                                    >
+                                        {nav.submenu.map((submenu, index) => (
+                                            <li key={index} className="dropdown-item">
+                                                <a href={submenu.url}>{submenu.title}</a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li >
+                            ) : (
+                                <li className="navb-item" key={index} >
+                                    <a href={nav.id} className="navb-link" >
+                                        <span>{nav.value}</span>
+                                    </a>
+                                </li>
+                            )
+                            }
+                        </>
+                    );
+                })}
+                {role === 4 && admin_navs.map((nav, index) => {
                     return (
                         <>
                             {nav.submenu ? (

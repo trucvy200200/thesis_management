@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
-import { list } from "../../utils/api/major";
 
 function SelectMajor({ value, setValue, disabled = false }) {
   const [listMajor, setListMajor] = useState([]);
@@ -8,8 +7,8 @@ function SelectMajor({ value, setValue, disabled = false }) {
   useEffect(() => {
     const getListMajor = async () => {
       try {
-        const res = await list();
-        setListMajor(res.data?.filter((i) => i.isBlock > 0));
+        // const res = await list();
+        // setListMajor(res.data?.filter((i) => i.isBlock > 0));
       } catch (error) {
         throw error;
       }

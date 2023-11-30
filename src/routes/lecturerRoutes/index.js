@@ -4,14 +4,14 @@ import { Navigate } from "react-router-dom"
 const RegisterThesis = React.lazy(() => import("../../pages/lecturer/registerThesis"))
 const Profile = React.lazy(() => import("../../pages/lecturer/profile"))
 const ManageThesis = React.lazy(() => import("../../pages/lecturer/manageThesis"))
-const ApproveThesis = React.lazy(() => import("../../pages/lecturer/approveThesis"))
+const AssignedLecturer = React.lazy(() => import("../../pages/lecturer/assignedLecturer"))
 const routes = [
     // other mappings ...
     { path: "/", element: <Navigate to="/register-thesis" replace={true} /> },
     { path: "/manage-thesis", element: <ManageThesis /> },
     { path: "/register-thesis", element: <RegisterThesis /> },
     { path: "/profile", element: <Profile /> },
-    // { path: "/approve-thesis", element: <ApproveThesis /> },
+    { path: "/assigned-thesis", element: <AssignedLecturer /> },
 ]
 
 export default routes
