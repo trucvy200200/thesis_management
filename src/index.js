@@ -7,12 +7,15 @@ import { store } from './redux/storeConfig/store'
 import { Provider } from 'react-redux'
 import "./styles/style.scss"
 import { Toaster } from 'react-hot-toast'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
-      <Toaster position="top-right" toastOptions={{ className: 'react-hot-toast' }} />
+      <GoogleOAuthProvider clientId=''>
+        <App />
+        <Toaster position="top-right" toastOptions={{ className: 'react-hot-toast' }} />
+      </GoogleOAuthProvider>
     </Provider>
   </React.StrictMode>
 );

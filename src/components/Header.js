@@ -23,10 +23,10 @@ const Header = ({ role }) => {
                     <nav className="nav_actions">
                         <Navbar role={role} />
                     </nav>
-                    {/* <Link to="/login">
+                    <Link to="/login">
                         <div className="btn">Login</div>
-                    </Link> */}
-                    <UserDropdown />
+                    </Link>
+                    {/* <UserDropdown /> */}
                 </div>
             </header>
         </>
