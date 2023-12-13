@@ -54,8 +54,8 @@ const management_navs = [
 
 const admin_navs = [
     {
-        id: "/manage-student",
-        value: "Sinh viên",
+        id: "/manage-user",
+        value: "Tài khoản",
     },
     {
         id: "/manage-thesis",
@@ -72,10 +72,6 @@ const admin_navs = [
     {
         id: "/manage-register",
         value: "Đợt đăng ký đề tài",
-    },
-    {
-        id: "/manage-lecturer",
-        value: "Giảng viên",
     }
 ]
 const lenturer_navs = [

@@ -127,6 +127,11 @@ function ManageThesis() {
                 Quản lý đề tài
             </Button>
             <Box height={"70vh"} width={"100%"} mt={4}>
+                <div className="d-flex justify-content-end">
+                    <Button size="large" className="bg-success" variant="contained">
+                        Thêm đề tài
+                    </Button>
+                </div>
                 <DataGrid rows={listTopic} columns={columns} hideFooter={true} />
             </Box>
             <ConfirmDelete
