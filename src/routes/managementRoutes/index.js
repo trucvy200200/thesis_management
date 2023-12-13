@@ -6,6 +6,8 @@ const Profile = React.lazy(() => import("../../pages/lecturer/profile"))
 const ApproveThesis = React.lazy(() => import("../../pages/management/approveThesis"))
 const ManageThesis = React.lazy(() => import("../../pages/lecturer/manageThesis"))
 const AssignedLecturer = React.lazy(() => import("../../pages/management/assignedLecturer"))
+const ManageStudentSubmit = React.lazy(() => import("../../pages/lecturer/manageStudentSubmit"))
+const ManageTask = React.lazy(() => import("../../pages/lecturer/manageTask"))
 const routes = [
     // other mappings ...
     { path: "/", element: <Navigate to="/register-thesis" replace={true} /> },
@@ -16,6 +18,8 @@ const routes = [
     { path: "/profile", element: <Profile /> },
     { path: "/approve-thesis", element: <ApproveThesis /> },
     { path: "/assigned-lecturer", element: <AssignedLecturer /> },
+    { path: "/manage-submit", element: <ManageStudentSubmit /> },
+    { path: "/manage-task", element: <ManageTask /> },
 ]
 
 export default routes
