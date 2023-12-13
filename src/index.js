@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <GoogleOAuthProvider clientId=''>
+      <GoogleOAuthProvider clientId="437123391042-16rthbohjej7caekcv334nc8knfvc10k.apps.googleusercontent.com">
         <App />
         <Toaster position="top-right" toastOptions={{ className: 'react-hot-toast' }} />
       </GoogleOAuthProvider>

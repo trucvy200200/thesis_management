@@ -24,7 +24,7 @@ function ManageThesis() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [infoTopicUpdate, setInfoTopicUpdate] = useState({});
-
+    const approveByManagement = 1;
     const columns = [
         {
             field: "id",
@@ -39,7 +39,7 @@ function ManageThesis() {
             width: 200,
             renderCell: (params) => {
                 const label =
-                    params.row.approveByManagement == 0
+                    approveByManagement == 0
                         ? "Chưa được phê duyệt"
                         : "Đã được phê duyệt";
                 const color = params.row.approveByManagement == 0 ? "error" : "success";
@@ -53,34 +53,48 @@ function ManageThesis() {
             renderCell: (params) => {
                 return (
                     <Box display={"flex"} gap={2} alignItems={"center"}>
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => {
-                                setIsOpenModalUpdate(true);
-                                setIdUpdate(params.row._id);
-                            }}
-                        >
-                            Chi tiết
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            color="error"
-                            onClick={() => {
-                                setIsOpenConfirmDelete(true);
-                                setIdDelete(params.row._id);
-                            }}
-                        >
-                            Hủy đề tài
-                        </Button>
+                        {
+                            approveByManagement === 0 ?
+                                <div>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        onClick={() => {
+                                            setIsOpenModalUpdate(true);
+                                            setIdUpdate(params.row._id);
+                                        }}
+                                    >
+                                        Chi tiết
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        color="error"
+                                        onClick={() => {
+                                            setIsOpenConfirmDelete(true);
+                                            setIdDelete(params.row._id);
+                                        }}
+                                    >
+                                        Hủy đề tài
+                                    </Button>
+                                </div>
+                                : <>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        href="/manage-task"
+                                    >
+                                        Chi tiết
+                                    </Button>
+                                </>
+
+                        }
+
                     </Box>
                 );
             },
         },
     ];
-
-
 
 
     return (
@@ -171,6 +185,7 @@ function ManageThesis() {
                     </Grid>
                 </Grid>
             </ModalUpdate>
+
         </div>
     );
 }

@@ -43,7 +43,7 @@ const ModalUpdate = ({
               color="error"
               size="small"
             >
-              Không đồng ý
+              Đóng
             </Button>
           )}
           <Button autoFocus onClick={handleOk} size="small" variant="contained">

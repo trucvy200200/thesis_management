@@ -1,4 +1,6 @@
 import './App.css';
+import { useEffect } from 'react';
+import axios from "axios"
 import guestRoutes from './routes/guestRoutes';
 import studentRoutes from "./routes/studentRoutes"
 import lecturerRoutes from "./routes/lecturerRoutes"
@@ -11,7 +13,8 @@ import {
   RouterProvider,
 } from "react-router-dom"
 function App() {
-  const role = null
+  const role = 2
+
   const router = createBrowserRouter([
     {
       element: <Layout role={role} />,

@@ -1,13 +1,17 @@
 import { GoogleLogin } from '@react-oauth/google';
-
+import { useEffect } from 'react';
 import Typography from '@mui/material/Typography'
-
+import { jwtDecode } from "jwt-decode";
 import Box from '@mui/material/Box'
-
-
+import "./style.scss"
+import axios from "axios"
 
 const Login = () => {
-
+    // const googleAuth = () => {
+    //     window.open(
+    //         `${process.env.REACT_APP_API_URL}/auth/google/callback`, "_self"
+    //     )
+    // }
     return (
         <div id="login">
             <Box className='content-right'>
@@ -34,9 +38,13 @@ const Login = () => {
                             <Typography sx={{ color: 'text.secondary', textAlign: 'left' }}>
                                 Please sign-in to your account and start the adventure
                             </Typography>
+                            {/* <button type="button" class="login-with-google-btn" onClick={googleAuth} >
+                                Sign in with Google
+                            </button> */}
                             <GoogleLogin
                                 onSuccess={credentialResponse => {
-                                    console.log(credentialResponse);
+                                    var credentialResponseDecode = jwtDecode(credentialResponse.credential);
+                                    console.log(credentialResponseDecode);
                                 }}
                                 onError={() => {
                                     console.log('Login Failed');

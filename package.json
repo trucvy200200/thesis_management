@@ -1,6 +1,7 @@
 {
   "name": "project",
   "version": "0.1.0",
+  "proxy": "http://localhost:6969",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -23,6 +24,7 @@
     "@uppy/thumbnail-generator": "^3.0.6",
     "axios": "^1.6.2",
     "bootstrap": "^4.0.0",
+    "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.0",
