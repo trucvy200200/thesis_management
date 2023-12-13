@@ -22,6 +22,8 @@ const ConfirmApprove = styled(ConfirmDelete)({});
 
 function ApproveSubTopic() {
     const [isOpenModal, setIsOpenMdal] = useState(false);
+    const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+
     const columns = [
         {
             field: "id",
@@ -47,10 +49,10 @@ function ApproveSubTopic() {
                             color="success"
                             onClick={() => setIsOpenMdal(true)}
                         >
-                            Xác nhận
+                            Duyệt
                         </Button>
-                        <Button variant="contained" size="small">
-                            Chi tiết
+                        <Button variant="contained text-white bg-danger" size="small" onClick={() => setIsOpenConfirmDelete(true)}>
+                            Xóa
                         </Button>
                     </Box>
                 );
@@ -70,6 +72,11 @@ function ApproveSubTopic() {
                 title={"Hộp thoại xác nhận"}
                 content={"Bạn có chắc chắn muốn duyệt đề tài này không?"}
                 handleClose={() => setIsOpenMdal(false)}
+            />
+            <ConfirmDelete
+                open={isOpenConfirmDelete}
+                // handleOk={handleDelete}
+                handleClose={() => setIsOpenConfirmDelete(false)}
             />
         </div>
     );
