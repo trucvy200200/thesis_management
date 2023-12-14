@@ -8,12 +8,20 @@ import { Provider } from 'react-redux'
 import "./styles/style.scss"
 import { Toaster } from 'react-hot-toast'
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './context/AuthProvider';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <GoogleOAuthProvider clientId="437123391042-16rthbohjej7caekcv334nc8knfvc10k.apps.googleusercontent.com">
-        <App />
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              <Route path="/*" element={<App />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
         <Toaster position="top-right" toastOptions={{ className: 'react-hot-toast' }} />
       </GoogleOAuthProvider>
     </Provider>

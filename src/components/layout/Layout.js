@@ -3,12 +3,11 @@ import Header from "../Header"
 import Banner from "../Banner"
 import { Suspense, useEffect } from "react"
 import { LoadingBackground } from "../loading/LoadingBackground"
-export default function Layout({ role }) {
-
+export default function Layout() {
     return (
         <>
             <Banner />
-            <Header role={role} />
+            <Header />
             <main>
                 <Suspense fallback={<LoadingBackground />}>
                     <Outlet />

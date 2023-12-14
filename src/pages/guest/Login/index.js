@@ -5,13 +5,13 @@ import { jwtDecode } from "jwt-decode";
 import Box from '@mui/material/Box'
 import "./style.scss"
 import axios from "axios"
-
+import { useNavigate, useLocation } from "react-router-dom"
+import useAuth from '../../../hooks/useAuth';
 const Login = () => {
-    // const googleAuth = () => {
-    //     window.open(
-    //         `${process.env.REACT_APP_API_URL}/auth/google/callback`, "_self"
-    //     )
-    // }
+    const navigate = useNavigate()
+    const location = useLocation()
+    const { setAuth } = useAuth();
+    const from = location.state?.from?.pathname || "/";
     return (
         <div id="login">
             <Box className='content-right'>
@@ -44,7 +44,15 @@ const Login = () => {
                             <GoogleLogin
                                 onSuccess={credentialResponse => {
                                     var credentialResponseDecode = jwtDecode(credentialResponse.credential);
-                                    console.log(credentialResponseDecode);
+                                    axios.post('/auth/login', { email: credentialResponseDecode.email }).then(res => {
+                                        const userData = res?.data?.userData.data
+                                        const role = userData?.role;
+                                        localStorage.setItem('userData', JSON.stringify({ ...userData }))
+                                        localStorage.setItem('token', userData.token)
+                                        setAuth({ role });
+                                        console.log(role)
+                                        navigate(`/${role.toLowerCase()}`, { state: { isLogin: true } });
+                                    })
                                 }}
                                 onError={() => {
                                     console.log('Login Failed');

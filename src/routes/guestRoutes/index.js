@@ -9,14 +9,14 @@ const Preference = React.lazy(() => import("../../pages/guest/Preference"))
 const LecturerList = React.lazy(() => import("../../pages/guest/Lecturer"))
 
 const routes = [
-    // other mappings ...
+    // other mappings ...    
+    { path: "login", element: <Login /> },
+    { path: "annoucement", element: <Announcement /> },
     { path: "/", element: <Navigate to="/annoucement" replace={true} /> },
-    { path: "/login", element: <Login /> },
-    { path: "/annoucement", element: <Announcement /> },
-    { path: "/announcement/:id", element: <AnnouncementDetail /> },
-    { path: "/guide", element: <Guide /> },
-    { path: "/lecturer-list", element: <LecturerList /> },
-    { path: "/preference", element: <Preference /> },
+    { path: "announcement/:id", element: <AnnouncementDetail /> },
+    { path: "guide", element: <Guide /> },
+    { path: "lecturer-list", element: <LecturerList /> },
+    { path: "preference", element: <Preference /> },
 ]
 
 export default routes

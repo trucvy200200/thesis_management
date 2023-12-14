@@ -22,7 +22,7 @@ const UserDropdown = () => {
   const [loading, setLoading] = useState(false)
   const id = useRef()
   const dispatch = useDispatch()
-  const data = JSON.parse(localStorage.getItem("userDataUser"))
+  const data = JSON.parse(localStorage.getItem("userData"))
 
   const handleLogoutUser = () => {
     dispatch(logout(
@@ -30,8 +30,8 @@ const UserDropdown = () => {
       setLoading,
       () => navigate("/")
     ))
-    localStorage.removeItem("userDataUser")
-    localStorage.removeItem("accessTokenUser")
+    localStorage.removeItem("userData")
+    localStorage.removeItem("token")
   }
   //** Vars
   const userAvatar = defaultAvatar

@@ -9,7 +9,7 @@ const ManageStudentSubmit = React.lazy(() => import("../../pages/lecturer/manage
 const ManageTask = React.lazy(() => import("../../pages/lecturer/manageTask"))
 const routes = [
     // other mappings ...
-    { path: "/", element: <Navigate to="/register-thesis" replace={true} /> },
+    { path: "/lecturer", element: <Navigate to="/lecturer/register-thesis" replace={true} /> },
     { path: "/manage-thesis", element: <ManageThesis /> },
     { path: "/register-thesis", element: <RegisterThesis /> },
     { path: "/profile", element: <Profile /> },

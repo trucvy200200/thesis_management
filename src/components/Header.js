@@ -1,9 +1,12 @@
 import React, { useEffect, useState, memo } from "react";
 import Navbar from "./navbar/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import UserDropdown from "./UserDropdown";
-const Header = ({ role }) => {
+import useAuth from '../hooks/useAuth';
+const Header = () => {
     const [isSticky, setIsSticky] = useState(false);
+    const location = useLocation();
+    const isLogin = location?.state?.isLogin
     useEffect(() => {
         const handleIsSticky = () => {
             window.scrollY >= 50 ? setIsSticky(true) : setIsSticky(false);
@@ -21,12 +24,14 @@ const Header = ({ role }) => {
                         <span>Thesis Management</span>
                     </a>
                     <nav className="nav_actions">
-                        <Navbar role={role} />
+                        <Navbar role={JSON.parse(localStorage.getItem("userData"))?.role} />
                     </nav>
-                    <Link to="/login">
-                        <div className="btn">Login</div>
-                    </Link>
-                    {/* <UserDropdown /> */}
+                    {isLogin || JSON.parse(localStorage.getItem("userData"))?.token ?
+                        <UserDropdown /> :
+                        <Link to="/login">
+                            <div className="btn">Login</div>
+                        </Link>
+                    }
                 </div>
             </header>
         </>

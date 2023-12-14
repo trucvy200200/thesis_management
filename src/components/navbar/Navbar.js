@@ -1,5 +1,3 @@
-import { useState, useRef } from 'react'
-
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 const navs = [
     {
@@ -23,11 +21,11 @@ const navs = [
 
 const student_navs = [
     {
-        id: "/register-thesis",
+        id: "/student/register-thesis",
         value: "Đăng ký đề tài",
     },
     {
-        id: "/manage-thesis",
+        id: "/student/manage-thesis",
         value: "Quản lý đề tài",
 
     }
@@ -35,42 +33,42 @@ const student_navs = [
 
 const management_navs = [
     {
-        id: "/register-thesis",
+        id: "/management/register-thesis",
         value: "Đăng ký đề tài",
     },
     {
-        id: "/manage-thesis",
+        id: "/management/manage-thesis",
         value: "Quản lý đề tài",
     },
     {
-        id: "/approve-thesis",
+        id: "/management/approve-thesis",
         value: "Duyệt đề tài",
     },
     {
-        id: "/assigned-lecturer",
+        id: "/management/assigned-lecturer",
         value: "Phân GVPB",
     }
 ]
 
 const admin_navs = [
     {
-        id: "/manage-user",
+        id: "/admin/manage-user",
         value: "Tài khoản",
     },
     {
-        id: "/manage-thesis",
+        id: "/admin/manage-thesis",
         value: "Đề tài",
     },
     {
-        id: "/manage-term",
+        id: "/admin/manage-term",
         value: "Niên khóa",
     },
     {
-        id: "/manage-major",
+        id: "/admin/manage-major",
         value: "Chuyên ngành",
     },
     {
-        id: "/manage-register",
+        id: "/admin/manage-register",
         value: "Đợt đăng ký đề tài",
     }
 ]
@@ -120,7 +118,7 @@ const Navbar = ({ role }) => {
                         </>
                     );
                 })}
-                {role === 1 && student_navs.map((nav, index) => {
+                {role === "Student" && student_navs.map((nav, index) => {
                     return (
                         <>
                             {nav.submenu ? (
@@ -148,7 +146,7 @@ const Navbar = ({ role }) => {
                         </>
                     );
                 })}
-                {role === 2 && lenturer_navs.map((nav, index) => {
+                {role === "Lecturer" && lenturer_navs.map((nav, index) => {
                     return (
                         <>
                             {nav.submenu ? (
@@ -176,7 +174,7 @@ const Navbar = ({ role }) => {
                         </>
                     );
                 })}
-                {role === 3 && management_navs.map((nav, index) => {
+                {role === "Management" && management_navs.map((nav, index) => {
                     return (
                         <>
                             {nav.submenu ? (
@@ -204,7 +202,7 @@ const Navbar = ({ role }) => {
                         </>
                     );
                 })}
-                {role === 4 && admin_navs.map((nav, index) => {
+                {role === "Admin" && admin_navs.map((nav, index) => {
                     return (
                         <>
                             {nav.submenu ? (
