@@ -21,8 +21,8 @@ root.render(
               <Route path="/*" element={<App />} />
             </Routes>
           </AuthProvider>
+          <Toaster position="top-right" toastOptions={{ className: 'react-hot-toast' }} />
         </BrowserRouter>
-        <Toaster position="top-right" toastOptions={{ className: 'react-hot-toast' }} />
       </GoogleOAuthProvider>
     </Provider>
   </React.StrictMode>

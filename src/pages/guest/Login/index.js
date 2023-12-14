@@ -1,5 +1,4 @@
 import { GoogleLogin } from '@react-oauth/google';
-import { useEffect } from 'react';
 import Typography from '@mui/material/Typography'
 import { jwtDecode } from "jwt-decode";
 import Box from '@mui/material/Box'
@@ -7,6 +6,7 @@ import "./style.scss"
 import axios from "axios"
 import { useNavigate, useLocation } from "react-router-dom"
 import useAuth from '../../../hooks/useAuth';
+import toast from "react-hot-toast"
 const Login = () => {
     const navigate = useNavigate()
     const location = useLocation()
@@ -53,9 +53,12 @@ const Login = () => {
                                         console.log(role)
                                         navigate(`/${role.toLowerCase()}`, { state: { isLogin: true } });
                                     })
+                                        .catch((e) => {
+                                            toast.error("Email doesn't exist!")
+                                        })
                                 }}
                                 onError={() => {
-                                    console.log('Login Failed');
+                                    toast.error("Login Failed!")
                                 }}
                             />
                         </Box>
