@@ -23,7 +23,7 @@ const UserDropdown = () => {
   const id = useRef()
   const dispatch = useDispatch()
   const data = JSON.parse(localStorage.getItem("userData"))
-
+  const role = data?.role
   const handleLogoutUser = () => {
     dispatch(logout(
       data?._id,
@@ -46,7 +46,7 @@ const UserDropdown = () => {
           </div>
         </DropdownToggle>
         <DropdownMenu end>
-          <DropdownItem tag={Link} to="/profile">
+          <DropdownItem tag={Link} to={`/${role.toLowerCase()}/profile`}>
             <User size={16} style={{ marginRight: "7.5px" }} />
             <span className="align-middle">Profile</span>
           </DropdownItem>
