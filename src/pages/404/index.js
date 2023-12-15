@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { Button } from "reactstrap"
 import source from "../../assets/error.svg"
 const PageNotFound = () => {
-
+    const role = JSON.parse(localStorage.getItem("userData"))?.role
     return (
         <div className="misc-wrapper">
             <Link className="brand-logo" to="/" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -17,7 +17,7 @@ const PageNotFound = () => {
                 <div className="w-100 text-center">
                     <h2 className="mb-1">Page Not Found 🕵🏻‍♀️</h2>
                     <p className="mb-2">Oops! 😖 The requested URL was not found on this server</p>
-                    <Button tag={Link} to="/" color="primary" className="btn-sm-block mb-2">
+                    <Button tag={Link} to={`/${role?.toLowerCase()}`} color="primary" className="btn-sm-block mb-2">
                         Come back
                     </Button>
                     <img className="img-fluid" src={source} alt="Not authorized page" />

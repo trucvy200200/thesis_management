@@ -12,9 +12,9 @@ export default {
 
   // ** Value of this property will be used as key to store JWT token in storage
   mongoTokenUser: "mongoTokenUser",
-  storageTokenKeyName: "accessTokenUser",
+  storageTokenKeyName: "token",
   storageRefreshTokenKeyName: "refreshTokenUser",
-  storageUserData: "userDataUser",
+  storageUserData: "userData",
   storageUserDataReLogin: "storageUserDataReLogin",
   storageUserRemember: "userRememberUser",
   rememberUser: "rememberUser",

@@ -58,9 +58,6 @@
                 border-radius: 20px;
                 object-fit: contain;
                 height: 300px !important;
-                @include devices(sm){
-                  width: 100%;
-                }
               }
             }
             &Content{
@@ -106,16 +103,8 @@
                 width: fit-content;
               }
             }
-            @include devices(sm){
-              flex-direction: column;
-            }
           }
         }
-      }
-      @include devices(sm){
-        padding: 0;
-        display: flex;
-        flex-direction: column;
       }
     }
   }

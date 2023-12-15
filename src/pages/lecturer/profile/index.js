@@ -29,7 +29,7 @@ const Profile = () => {
     const [open, setOpen] = useState(false)
     const [isDisable, setIsDisable] = useState(true)
     const store = useSelector(state => state.user?.userInfo)
-    const [data, setData] = useState(JSON.parse(localStorage.getItem("userDataUser")))
+    const [data, setData] = useState(JSON.parse(localStorage.getItem("userData")))
     const [editData, setEditData] = useState(data)
     const [errorGender, setErrorGender] = useState(false)
     const [gender, setGender] = useState(data?.gender || "")
@@ -42,9 +42,9 @@ const Profile = () => {
         phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid')
     })
     // useEffect(() => {
-    //     setData(JSON.parse(localStorage.getItem("userDataUser")))
+    //     setData(JSON.parse(localStorage.getItem("userData")))
     //     dispatch(getUserInfoById(
-    //         JSON.parse(localStorage.getItem("userDataUser"))._id,
+    //         JSON.parse(localStorage.getItem("userData"))._id,
     //         () => handleLogoutUser()
     //     ))
     // }, [])
@@ -70,8 +70,8 @@ const Profile = () => {
             setLoading,
             () => navigate("/")
         ))
-        localStorage.removeItem("userDataUser")
-        localStorage.removeItem("accessTokenUser")
+        localStorage.removeItem("userData")
+        localStorage.removeItem("token")
     }
     const handleClickOpen = () => {
         setOpen(true);
@@ -85,7 +85,7 @@ const Profile = () => {
         setIsChoose(false)
     }
     const handleSave = async () => {
-        const userId = JSON.parse(localStorage.getItem("userDataUser"))._id
+        const userId = JSON.parse(localStorage.getItem("userData"))._id
         if (editData?.urlAvatar) {
             const formData = new FormData()
             formData.append("id", userId)
@@ -111,7 +111,7 @@ const Profile = () => {
                 .then(res => {
                     toast.success(<SuccessNotificationToast message={res?.data?.userData?.errMessage} />)
                     // dispatch(getUserInfoById(
-                    //     JSON.parse(localStorage.getItem("userDataUser"))._id,
+                    //     JSON.parse(localStorage.getItem("userData"))._id,
                     //     () => handleLogoutUser()
                     // ))
                     setIsDisable(true)

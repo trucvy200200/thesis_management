@@ -1,7 +1,7 @@
-export const configHeader = {
+export const configHeader = (token) => [{
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem("accessTokenUser")}`
+        'Authorization': `Bearer ${token}`
     }
-}
+}]

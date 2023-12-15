@@ -1,43 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import classnames from 'classnames'
-import avatar from '../../../assets/profile/no_avatar.png'
 import { Row, Col, Label, Input, Form } from 'reactstrap'
 import { Controller, useForm } from "react-hook-form"
-import Uppy from "@uppy/core"
+
 import { useDispatch, useSelector } from 'react-redux'
 import ErrorNotificationToast from "../../../components/toast/ToastFail"
 import SuccessNotificationToast from "../../../components/toast/ToastSuccess"
 import toast from "react-hot-toast"
 import FormHelperText from '@mui/material/FormHelperText'
-import thumbnailGenerator from "@uppy/thumbnail-generator"
 import Button from '@mui/material/Button'
 import Select from "react-select"
-import { Edit, X, Check } from "react-feather"
-import { DragDrop } from "@uppy/react"
 import { getUserInfoById } from "../store/action"
 import { useNavigate } from 'react-router-dom'
 import FormControl from '@mui/material/FormControl'
 import axios from "axios"
 import { configHeader } from '../../../@core/plugin/configHeader'
-import { isObjEmpty, checkPassword } from "../../../utility/Utils"
+import { isObjEmpty } from "../../../utility/Utils"
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TextField } from '@mui/material'
 import { logout } from "../../../redux/actions/auth"
+
 const options = () => {
     return [
-        { value: "male", label: "Male" },
+        { value: "Male", label: "Male" },
         { value: "Female", label: "Female" }
     ]
 }
 const Profile = () => {
-    const [isChoose, setIsChoose] = useState(false)
     const dispatch = useDispatch()
-    const [open, setOpen] = useState(false)
     const [isDisable, setIsDisable] = useState(true)
     const store = useSelector(state => state.user?.userInfo)
-    const [data, setData] = useState(JSON.parse(localStorage.getItem("userDataUser")))
-    const [editData, setEditData] = useState(data)
+    const [data, setData] = useState(JSON.parse(localStorage.getItem("userData")))
     const [errorGender, setErrorGender] = useState(false)
     const [gender, setGender] = useState(data?.gender || "")
     const [loading, setLoading] = useState(false)
@@ -45,21 +38,26 @@ const Profile = () => {
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
     const schema = yup.object().shape({
         fullname: yup.string().required(),
-        address: yup.string().required(),
+        class: yup.string().required(),
+        major: yup.string().required(),
+        facility: yup.string().required(),
         phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid')
     })
-    // useEffect(() => {
-    //     setData(JSON.parse(localStorage.getItem("userDataUser")))
-    //     dispatch(getUserInfoById(
-    //         JSON.parse(localStorage.getItem("userDataUser"))._id,
-    //         () => handleLogoutUser()
-    //     ))
-    // }, [])
+    useEffect(() => {
+        setData(JSON.parse(localStorage.getItem("userData")))
+        dispatch(getUserInfoById(
+            JSON.parse(localStorage.getItem("userData"))._id,
+            () => handleLogoutUser()
+        ))
+    }, [])
+
     const defaultValues = {
         fullname: data?.name,
-        address: data?.address,
         phoneNumber: data?.phoneNumber,
-        gender: data?.gender
+        gender: data?.gender,
+        class: data?.stClass,
+        major: data?.major,
+        facility: data?.facility
     }
     const {
         control,
@@ -75,50 +73,27 @@ const Profile = () => {
         dispatch(logout(
             data?._id,
             setLoading,
-            () => navigate("/")
+            () => navigate("/login")
         ))
-        localStorage.removeItem("userDataUser")
-        localStorage.removeItem("accessTokenUser")
+        localStorage.removeItem("userData")
+        localStorage.removeItem("token")
     }
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
-    const handleReset = () => {
-        data.avatar_file = null
-        setEditData({ ...editData, avatar: "", urlAvatar: "" })
-        setIsChoose(false)
-    }
-    const handleSave = async () => {
-        const userId = JSON.parse(localStorage.getItem("userDataUser"))._id
-        if (editData?.urlAvatar) {
-            const formData = new FormData()
-            formData.append("id", userId)
-            formData.append("image", editData?.urlAvatar)
-            const result = await axios.post("/api/upload-avatar", formData, configHeader)
 
-            if (result?.data?.message) {
-                dispatch(getUserInfoById(userId), () => navigate("/unauthorized"))
-                toast.success(<SuccessNotificationToast message={result?.data?.message} />)
-                setIsChoose(false)
-            }
-        }
-    }
     const onSubmit = e => {
         if (isObjEmpty(errors)) {
             const userData = {}
             userData.id = data._id
-            userData.fullname = e.fullname
-            userData.address = e.address
-            userData.phoneNumber = e.phoneNumber
+            userData.stClass = e.class
+            userData.fullName = e.fullname
+            userData.phone = e.phoneNumber
             userData.gender = gender.value
+            userData.facility = e.facility
+            userData.major = e.major
             axios.post("/api/update-by-id", userData, configHeader)
                 .then(res => {
                     toast.success(<SuccessNotificationToast message={res?.data?.userData?.errMessage} />)
                     dispatch(getUserInfoById(
-                        JSON.parse(localStorage.getItem("userDataUser"))._id,
+                        JSON.parse(localStorage.getItem("userData"))._id,
                         () => handleLogoutUser()
                     ))
                     setIsDisable(true)
@@ -146,10 +121,10 @@ const Profile = () => {
                                         </Label>
                                         <TextField
                                             disabled
-                                            id="email"
+                                            id="id"
                                             autoComplete="off"
                                             autoFocus
-                                            defaultValue={data?.email}
+                                            defaultValue={data?.idUser}
                                         />
                                     </FormControl>
                                 </Col>
@@ -206,11 +181,11 @@ const Profile = () => {
                                 </Col>
                                 <Col lg={6} sm={6} xs={12} className="mb-3">
                                     <FormControl fullWidth sx={{ mb: 3 }}>
-                                        <Label htmlFor='auth-login-v2-password' error={Boolean(errors.username)}>
-                                            Username
+                                        <Label htmlFor='auth-login-v2-password' error={Boolean(errors.facility)}>
+                                            Khoa
                                         </Label>
                                         <Controller
-                                            name='username'
+                                            name='facility'
                                             control={control}
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
@@ -220,12 +195,12 @@ const Profile = () => {
                                                     value={value}
                                                     onBlur={onBlur}
                                                     onChange={onChange}
-                                                    error={Boolean(errors.username)}
+                                                    error={Boolean(errors.facility)}
                                                 />
                                             )}
                                         />
-                                        {errors.username && (
-                                            <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>
+                                        {errors.facility && (
+                                            <FormHelperText sx={{ color: 'error.main' }}>{errors.facility.message}</FormHelperText>
                                         )}
                                     </FormControl>
                                 </Col>
@@ -276,7 +251,7 @@ const Profile = () => {
                                 <Col lg={6} sm={6} xs={12} className="mb-3">
                                     <FormControl fullWidth sx={{ mb: 3 }}>
                                         <Label htmlFor='auth-login-v2-password' error={Boolean(errors.major)}>
-                                            Ngành
+                                            Chuyên Ngành
                                         </Label>
                                         <Controller
                                             name='major'
@@ -300,11 +275,11 @@ const Profile = () => {
                                 </Col>
                                 <Col lg={6} sm={6} xs={12} className="mb-3">
                                     <FormControl fullWidth sx={{ mb: 3 }}>
-                                        <Label htmlFor='auth-login-v2-password' error={Boolean(errors.address)}>
-                                            Địa chỉ
+                                        <Label htmlFor='auth-login-v2-password' error={Boolean(errors.class)}>
+                                            Lớp
                                         </Label>
                                         <Controller
-                                            name='address'
+                                            name='class'
                                             control={control}
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
@@ -314,12 +289,12 @@ const Profile = () => {
                                                     value={value}
                                                     onBlur={onBlur}
                                                     onChange={onChange}
-                                                    error={Boolean(errors.address)}
+                                                    error={Boolean(errors.class)}
                                                 />
                                             )}
                                         />
-                                        {errors.address && (
-                                            <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>
+                                        {errors.class && (
+                                            <FormHelperText sx={{ color: 'error.main' }}>{errors.class.message}</FormHelperText>
                                         )}
                                     </FormControl>
                                 </Col>
@@ -336,9 +311,6 @@ const Profile = () => {
                                             </Button>
                                     }
                                 </Col>
-                                {/* <Button size='large' variant='contained' type="submit" sx={{ mb: 4 }}>
-                                    Save changes
-                                </Button> */}
                             </Row>
                         </Form>
                     </Col>

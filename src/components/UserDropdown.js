@@ -42,11 +42,11 @@ const UserDropdown = () => {
         <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
           <Avatar img={userAvatar} className={`bg-white ${userAvatar ? "" : "default"}`} />
           <div className="user-nav d-inline align-items-start">
-            <span className="user-name font-weight-bold">{data?.name}</span>
+            <span className="user-name font-weight-bold">{JSON.parse(localStorage.getItem("userData"))?.name}</span>
           </div>
         </DropdownToggle>
         <DropdownMenu end>
-          <DropdownItem tag={Link} to={`/${role.toLowerCase()}/profile`}>
+          <DropdownItem tag={Link} to={`/${role?.toLowerCase()}/profile`}>
             <User size={16} style={{ marginRight: "7.5px" }} />
             <span className="align-middle">Profile</span>
           </DropdownItem>

@@ -16,6 +16,7 @@ function App() {
     'Student': "Student",
     'Lecturer': "Lecturer",
     'Admin': "Admin",
+    'Management': "Management"
   }
 
   return (
@@ -36,6 +37,11 @@ function App() {
         </Route>
         <Route element={<RequireAuth allowedRoles={ROLES.Lecturer} />}>
           {lecturerRoutes?.map((router, index) => (
+            <Route path={router.path} element={router?.element} key={index} />
+          ))}
+        </Route>
+        <Route element={<RequireAuth allowedRoles={ROLES.Management} />}>
+          {managementRoutes?.map((router, index) => (
             <Route path={router.path} element={router?.element} key={index} />
           ))}
         </Route>

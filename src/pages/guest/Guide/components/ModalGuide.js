@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import "./styles/modal-custom-styles.scss"
-import contract from "../../../../assets/text.pdf"
+import guide from "../../../../assets/guide.pdf"
 // import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 import { Document, Page, pdfjs } from "react-pdf"
@@ -26,7 +26,7 @@ const DocumentBlock = styled.div`
   }
 `
 const ModalGuide = (props) => {
-  const term = contract
+  const term = guide
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
 

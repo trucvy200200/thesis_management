@@ -3,172 +3,112 @@ import { Box, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import { notify } from "../../../utility/helpers/notify";
-const listTopic = [
+import { useDispatch, useSelector } from 'react-redux'
+import ConfirmDelete from "../../../components/common/ConfirmDelete";
+import { getAllThesis, registerThesis } from "../store/action";
+import { useNavigate } from 'react-router-dom'
+import toast from "react-hot-toast"
+import { logout } from "../../../redux/actions/auth"
+const columns = ({ setIsConfirmOpen, setThesisId }) => [
+    { field: "code", headerName: "Mã đề tài", width: 150 },
+    { field: "title", headerName: "Tên đề tài", width: 250 },
+    { field: "description", headerName: "Mô tả", width: 400 },
     {
-        id: 1,
-        title: "Đè tài 1",
-        description: "Mô tả 1",
-        teacher: {
-            name: "Nguyễn Thanh Thuy",
-        }
-    }
-]
-const currentUser = {
-    name: "Nguyễn Thanh Thuy",
-    major: {
-        name: "IT"
-    }
-}
-const currentPeriod = {
-    timeOpen: "01/01/2022",
-    timeClose: "01/01/2024",
-}
-
-const currentTopic = {
-    id: 1,
-    title: "Đè tài 1",
-    description: "Mô tả 1",
-    teacher: {
-        name: "Nguyễn Thanh Thuy",
-    }
-}
-function SubTopic() {
-    // const [currentUser, setCurrentUser] = useState({});
-    // const [listTopic, setListTopic] = useState([]);
-    // const [currentTopic, setCurrentTopic] = useState({});
-    // const [currentPeriod, setCurrentPeriod] = useState(null);
-    const [text, setText] = useState("");
-
-    const columns = [
-        {
-            field: "id",
-            headerName: "STT",
-            width: 50,
-            valueGetter: (params) => {
-                return params.value;
-            },
+        field: "instructor",
+        headerName: "Giáo viên hướng dẫn",
+        width: 250,
+        valueGetter: (params) => {
+            return params.value[0].name;
         },
-        { field: "title", headerName: "Tên đè tài", width: 250 },
-        { field: "description", headerName: "Mô tả", width: 400 },
-        {
-            field: "teacher",
-            headerName: "Giáo viên hướng dẫn",
-            width: 250,
-            valueGetter: (params) => {
-                return params.value?.name;
-            },
-        },
-        {
-            field: "",
-            headerName: "Hành động",
-            width: 100,
-            renderCell: (params) => {
-                return (
-                    <Box display={"flex"} gap={2} alignItems={"center"}>
+    },
+    {
+        field: "",
+        headerName: "Hành động",
+        width: 100,
+        renderCell: (params) => {
+            return (
+                <Box display={"flex"} gap={2} alignItems={"center"}>
+                    {params?.row?.member.find(item => item._id === JSON.parse(localStorage.getItem("userData"))?._id) ? (
+                        <Button
+                            variant="contained bg-danger text-white"
+                            size="small"
+                            onClick={
+                                () => {
+                                    setIsConfirmOpen(true);
+                                    setThesisId(params?.row?._id)
+                                }
+                            }
+                        >
+                            Hủy
+                        </Button>
+                    ) : (
                         <Button
                             variant="contained"
                             size="small"
-                            onClick={() => handleSubTopic(params.row.id)}
+                            onClick={
+                                () => {
+                                    setIsConfirmOpen(true);
+                                    setThesisId(params?.row?._id)
+                                }
+                            }
                         >
                             Đăng kí
                         </Button>
-                    </Box>
-                );
-            },
+                    )}
+                </Box>
+            );
         },
-    ];
+    },
+];
+function SubTopic() {
+    // const [currentUser, setCurrentUser] = useState({});
+    const store = useSelector(state => state.student.thesisList)
+    // const [listTopic, setListTopic] = useState([]);
+    // const [currentTopic, setCurrentTopic] = useState({});
+    // const [currentPeriod, setCurrentPeriod] = useState(null);
 
-    const handleSubTopic = async (id) => {
-        try {
-            if (currentTopic) {
-                notify(
-                    "warn",
-                    "Bạn đã đăng kí đề tài, vui lòng vào quản lý đề tài để xem chi tiết"
-                );
-            } else {
-                // await update(id, { student: currentUser?._id });
-                notify("success", "Cập nhật thành công");
-                // await getListTopic();
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    // const getListTopic = async () => {
-    //     try {
-    //         const res = await list({
-    //             major: currentUser?.major?._id,
-    //             approveByManagement: 1,
-    //             student: undefined,
-    //             teacher: "notNull",
-    //         });
-    //         setListTopic(res.data?.map((e) => ({ id: e._id, ...e })));
-    //     } catch (error) { }
-    // };
-
-    // useEffect(() => {
-    //     const getCurrentUser = async () => {
-    //         try {
-    //             const id = JSON.parse(localStorage.getItem("user"))._id;
-    //             const res = await findUser(id);
-    //             setCurrentUser(res.data);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     };
-    //     getCurrentUser();
-    // }, []);
-
-    // useEffect(() => {
-    //     const getCurrentTopic = async () => {
-    //         try {
-    //             const res = await findTopicOfStudent(currentUser?._id);
-    //             setCurrentTopic(res.data);
-    //         } catch (error) { }
-    //     };
-    //     currentUser && getCurrentTopic();
-    //     currentUser && getListTopic();
-    // }, [currentUser]);
-
-    // useEffect(() => {
-    //     const getPeriod = async () => {
-    //         try {
-    //             const res = await findPeriodByMajor(currentUser?.major?._id);
-    //             setCurrentPeriod(res.data);
-    //         } catch (error) { }
-    //     };
-    //     currentUser && getPeriod();
-    // }, [currentUser]);
-
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const [thesisId, setThesisId] = useState("")
     useEffect(() => {
-        const getStatus = () => {
-            const today = moment();
-            const timeOpen = moment(currentPeriod?.timeOpen, "DD/MM/YYYY");
-            const timeClose = moment(currentPeriod?.timeClose, "DD/MM/YYYY");
+        getListTopic();
+    }, []);
 
-            console.log({ today, timeOpen });
 
-            if (today.isBefore(timeOpen)) {
-                setText("Chưa đến thời gian đăng kí đề tài. Vui lòng vào lại sau !");
-            }
-
-            if (today.isAfter(timeClose)) {
-                setText(
-                    "Đã hết thời gian đăng kí đề tài. Vui lòng liên hệ với admin để nhận được trợ giúp!"
-                );
-            }
-        };
-        currentPeriod?.timeOpen && getStatus();
-    }, [currentPeriod]);
-
+    const handleRegisterTopic = async (id) => {
+        const params = {}
+        params.idThesis = id
+        params.idMember = JSON.parse(localStorage.getItem("userData"))?._id
+        await dispatch(registerThesis(
+            params,
+            () => handleLogoutUser(),
+            () => { toast.success("Đăng kí thành công"); setIsConfirmOpen(false); navigate('/student/manage-thesis') }
+        ))
+    };
+    const handleLogoutUser = () => {
+        dispatch(logout(
+            JSON.parse(localStorage.getItem("userData"))?._id,
+            setLoading,
+            () => navigate("/login")
+        ))
+        localStorage.removeItem("userData")
+        localStorage.removeItem("token")
+    }
+    const getListTopic = async () => {
+        const params = {}
+        params.industry = "software engineering"
+        params.status = 1
+        dispatch(getAllThesis(params, () => handleLogoutUser()))
+    };
     return (
         <div className="wrapper my-3">
             <Button fullWidth size="large" variant="contained">
                 Đăng kí đề tài
             </Button>
 
-            {!currentUser?.major ? (
+            {!JSON.parse(localStorage.getItem("userData"))?.major ? (
                 <Box
                     mt={4}
                     display={"flex"}
@@ -180,39 +120,28 @@ function SubTopic() {
                     <Typography variant="subtitle2">
                         Bạn phải cập nhật thông tin chuyên ngành trước khi đăng kí đề tài
                     </Typography>
-                    <Button variant="contained" size="small" href="/student-info">
+                    <Button variant="contained" size="small" href="/student/profile">
                         Cập nhật
                     </Button>
                 </Box>
-            ) : currentPeriod ? (
-                text ? (
-                    <>
-                        <Typography variant="subtitle2" mt={4}>
-                            {text}
-                        </Typography>
-                        <Typography variant="subtitle2" mt={2}>
-                            Thời gian đăng kí đề tài: {currentPeriod.timeOpen} -{" "}
-                            {currentPeriod.timeClose}
-                        </Typography>
-                    </>
-                ) : (
-                    <>
-                        <Typography variant="subtitle2" color={"error"} mt={4}>
-                            *Lưu ý: Sinh viên muốn đề xuất đề tài vui lòng liên hệ với GVHD
-                        </Typography>
-                        <Box height={300} width={"100%"} mt={2}>
-                            <DataGrid rows={listTopic} columns={columns} hideFooter={true} />
-                        </Box>
-                    </>
-                )
             ) : (
                 <>
-                    <Typography variant="subtitle2" mt={2}>
-                        Chưa có lịch về đăng kí chuyên ngành. Vui lòng đợi thêm thông báo từ
-                        hệ thống.
+                    <Typography variant="subtitle2" color={"error"} mt={4}>
+                        *Lưu ý: Sinh viên muốn đề xuất đề tài vui lòng liên hệ với GVHD
                     </Typography>
+                    <Box height={300} width={"100%"} mt={2}>
+                        <DataGrid rows={store} columns={columns({ setIsConfirmOpen, setThesisId })} hideFooter={true} getRowId={(row) => row._id} />
+                    </Box>
                 </>
-            )}
+            )
+            }
+            <ConfirmDelete
+                open={isConfirmOpen}
+                handleOk={() => handleRegisterTopic(thesisId)}
+                title="Hộp thoại xác nhận đăng kí đề tài"
+                content="Bạn có chắc chắn đăng ký đề tài này?"
+                handleClose={() => setIsConfirmOpen(false)}
+            />
         </div>
     );
 }

@@ -50,7 +50,6 @@ const Login = () => {
                                         localStorage.setItem('userData', JSON.stringify({ ...userData }))
                                         localStorage.setItem('token', userData.token)
                                         setAuth({ role });
-                                        console.log(role)
                                         navigate(`/${role.toLowerCase()}`, { state: { isLogin: true } });
                                     })
                                         .catch((e) => {
