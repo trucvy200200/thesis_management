@@ -74,15 +74,15 @@ const admin_navs = [
 ]
 const lenturer_navs = [
     {
-        id: "/register-thesis",
+        id: "/lecturer/register-thesis",
         value: "Đăng ký đề tài",
     },
     {
-        id: "/manage-thesis",
+        id: "/lecturer/manage-thesis",
         value: "Quản lý đề tài",
     },
     {
-        id: "/assigned-thesis",
+        id: "/lecturer/assigned-thesis",
         value: "Đề tài được phân công",
     }
 ]
