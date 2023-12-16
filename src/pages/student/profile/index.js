@@ -38,7 +38,6 @@ const Profile = () => {
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
     const schema = yup.object().shape({
         fullname: yup.string().required(),
-        class: yup.string().required(),
         major: yup.string().required(),
         facility: yup.string().required(),
         phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid')
@@ -83,13 +82,12 @@ const Profile = () => {
         if (isObjEmpty(errors)) {
             const userData = {}
             userData.id = data._id
-            userData.stClass = e.class
             userData.fullName = e.fullname
             userData.phone = e.phoneNumber
             userData.gender = gender.value
             userData.facility = e.facility
             userData.major = e.major
-            axios.post("/api/update-by-id", userData, configHeader)
+            axios.post("/api/update-by-id", userData, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
                 .then(res => {
                     toast.success(<SuccessNotificationToast message={res?.data?.userData?.errMessage} />)
                     dispatch(getUserInfoById(
@@ -284,7 +282,7 @@ const Profile = () => {
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
                                                 <TextField
-                                                    disabled={isDisable}
+                                                    disabled
                                                     autoFocus
                                                     value={value}
                                                     onBlur={onBlur}

@@ -30,6 +30,7 @@ export const getUserInfoById = (id, handleError) => {
 
 export const updateUserInfo = (id, handleError) => {
   return async (dispatch) => {
+    console.log(JSON.parse(localStorage.getItem("userData")).token)
     await axios.post(`/api/update-by-id`, { id: id }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
       .then((response) => {
         dispatch({
@@ -50,7 +51,7 @@ export const updateUserInfo = (id, handleError) => {
 }
 export const registerThesis = (params, handleError, handleSuccess) => {
   return async (dispatch) => {
-    await axios.post(`/api/register-thesis`, params, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
+    await axios.post(`/api/register-thesis`, params, configHeader(JSON.parse(localStorage.getItem("token")))[0])
       .then((response) => {
         dispatch({
           type: STUDENT_REGISTER_THESIS,

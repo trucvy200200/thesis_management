@@ -98,7 +98,7 @@ function SubTopic() {
     }
     const getListTopic = async () => {
         const params = {}
-        params.industry = "software engineering"
+        params.industry = "Information Technology"
         params.status = 1
         dispatch(getAllThesis(params, () => handleLogoutUser()))
     };
