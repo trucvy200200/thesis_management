@@ -35,10 +35,11 @@ function ManagementSubTopic() {
             configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
             .then((res) => {
                 toast.success(res?.data?.thesisData?.errMessage)
+                handleClear();
             }).catch((err) => {
                 toast.error(err?.response?.data?.thesisData?.errMessage)
             })
-        // handleClear();
+
     };
 
 
