@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Select, MenuItem } from "@mui/material";
-
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem"
 function SelectMajor({ value, setValue, disabled = false }) {
   const [listMajor, setListMajor] = useState([]);
 
@@ -24,11 +24,12 @@ function SelectMajor({ value, setValue, disabled = false }) {
 
   return (
     <>
-      <Select
-        label="Chuyên ngành"
+      <TextField
         fullWidth
         size="small"
+        label="Chuyên ngành"
         value={value}
+        select
         onChange={(e) => setValue(e.target.value)}
         disabled={disabled}
       >
@@ -37,7 +38,7 @@ function SelectMajor({ value, setValue, disabled = false }) {
             {e?.name}
           </MenuItem>
         ))}
-      </Select>
+      </TextField>
     </>
   );
 }

@@ -1,19 +1,17 @@
-import { Box, Button, Grid, TextField, Select, MenuItem } from "@mui/material";
+import { Box, Button, Grid, TextField, Select, MenuItem, FormLabel } from "@mui/material";
 import React, { useState } from "react";
 import SelectMajor from "../../../common/SelectMajor";
 
 function CreateAccount() {
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState(0);
   const [major, setMajor] = useState(null);
 
   const handleReset = () => {
     setName("");
-    setUsername("");
-    setPassword("");
+    setCode("");
     setEmail("");
     setRole(0);
     setMajor(0);
@@ -59,20 +57,9 @@ function CreateAccount() {
             <TextField
               fullWidth
               size="small"
-              label="Tên đăng nhập"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              size="small"
-              label="Mật khẩu"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              label="Mã số"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               required
             />
           </Grid>
@@ -87,17 +74,18 @@ function CreateAccount() {
             />
           </Grid>
           <Grid item xs={6}>
-            <Select
+            <TextField
               label="Vai trò"
               fullWidth
               size="small"
               value={role}
+              select
               onChange={(e) => setRole(e.target.value)}
             >
               <MenuItem value={0}>Sinh Viên</MenuItem>
               <MenuItem value={1}>Giảng Viên</MenuItem>
               <MenuItem value={2}>Trường bộ môn</MenuItem>
-            </Select>
+            </TextField>
           </Grid>
           <Grid item xs={6}>
             <SelectMajor value={major} setValue={setMajor} />
