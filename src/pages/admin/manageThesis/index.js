@@ -4,17 +4,23 @@ import { DataGrid } from "@mui/x-data-grid";
 import ConfirmDelete from "../../../components/common/ConfirmDelete";
 import ModalUpdate from "../../../components/common/ModalUpdate";
 import { notify } from "../../../utility/helpers/notify";
-
+const data = [{
+    id: 1,
+    title: "Tieu de 1",
+    description: "Mo ta 1",
+    approveByManagement: 1
+}];
 function ManageThesis() {
     const [listTopic, setListTopic] = useState([]);
     const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
     const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
-
+    const [isOpenModalAdd, setIsOpenModalAdd] = useState(false);
     const [idDelete, setIdDelete] = useState("");
     const [idUpdate, setIdUpdate] = useState("");
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [code, setCode] = useState("");
     const [infoTopicUpdate, setInfoTopicUpdate] = useState({});
 
     const columns = [
@@ -53,7 +59,7 @@ function ManageThesis() {
                                 setIdUpdate(params.row._id);
                             }}
                         >
-                            Chi tiết
+                            Sửa
                         </Button>
                         <Button
                             variant="outlined"
@@ -128,11 +134,11 @@ function ManageThesis() {
             </Button>
             <Box height={"70vh"} width={"100%"} mt={4}>
                 <div className="d-flex justify-content-end">
-                    <Button size="large" className="bg-success" variant="contained">
+                    <Button size="large" className="bg-success" variant="contained" onClick={() => setIsOpenModalAdd(true)}>
                         Thêm đề tài
                     </Button>
                 </div>
-                <DataGrid rows={listTopic} columns={columns} hideFooter={true} />
+                <DataGrid rows={data} columns={columns} hideFooter={true} />
             </Box>
             <ConfirmDelete
                 title={"Hủy đề tài"}
@@ -204,6 +210,56 @@ function ManageThesis() {
                                 ? "Đã được phê duyệt"
                                 : "Chưa được phê duyệt"}
                         </Typography>
+                    </Grid>
+                </Grid>
+            </ModalUpdate>
+            <ModalUpdate
+                open={isOpenModalAdd}
+                handleClose={() => setIsOpenModalAdd(false)}
+                // handleOk={handleAdd}
+                title={"Thêm đề tài"}
+                titleOk={"Thêm"}
+            >
+                <Grid container spacing={2} py={2}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={2}>
+                            <Typography variant="subtitle2">Mã đề tài:</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                value={code}
+                                onChange={(e) => setCode(e.target.value)}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={1} mt={1}>
+                        <Grid item xs={2}>
+                            <Typography variant="subtitle2">Tên đề tài:</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={1} mt={1}>
+                        <Grid item xs={2}>
+                            <Typography variant="subtitle2">Mô tả đề tài:</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <TextField
+                                multiline
+                                rows={3}
+                                fullWidth
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
             </ModalUpdate>
