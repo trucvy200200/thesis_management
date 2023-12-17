@@ -82,7 +82,7 @@ function ManageThesis() {
                                     <Button
                                         variant="contained"
                                         size="small"
-                                        href="/lecturer/manage-task"
+                                        href={`/${JSON.parse(localStorage.getItem("userData")).role}/manage-task`}
                                     >
                                         Chi tiết
                                     </Button>

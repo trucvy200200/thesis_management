@@ -31,7 +31,7 @@ function TaskTable() {
                         <Button
                             variant="contained"
                             size="small"
-                            href="/lecturer/manage-submit"
+                            href={`/${JSON.parse(localStorage.getItem("userData")).role}/manage-submit`}
                         >
                             Chi tiết
                         </Button>
