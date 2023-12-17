@@ -4,7 +4,12 @@ import SelectMajor from "../../../components/common/SelectMajor";
 import { DataGrid } from "@mui/x-data-grid";
 import { notify } from "../../../utility/helpers/notify";
 import ConfirmDelete from "../../../components/common/ConfirmDelete";
-
+const data = [{
+    id: 1,
+    name: "Chuyên ngành 1",
+    timeOpen: "09:00",
+    timeClose: "12:00",
+}]
 function ManagePeriod() {
     const [timeOpen, setTimeOpen] = useState("");
     const [timeClose, setTimeClose] = useState("");
@@ -130,7 +135,7 @@ function ManagePeriod() {
                 </Grid>
             </Box>
             <Box height={"70vh"} width={"100%"} mt={4}>
-                <DataGrid rows={listPeriod} columns={columns} hideFooter={true} />
+                <DataGrid rows={data} columns={columns} hideFooter={true} />
             </Box>
             <ConfirmDelete
                 open={isOpenConfirmDelete}
