@@ -82,7 +82,7 @@ function ManageThesis() {
                                     <Button
                                         variant="contained"
                                         size="small"
-                                        href="/manage-task"
+                                        href="/lecturer/manage-task"
                                     >
                                         Chi tiết
                                     </Button>
