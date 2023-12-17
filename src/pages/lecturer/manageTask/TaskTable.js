@@ -31,7 +31,7 @@ function TaskTable() {
                         <Button
                             variant="contained"
                             size="small"
-                            href="/manage-submit"
+                            href="/lecturer/manage-submit"
                         >
                             Chi tiết
                         </Button>
