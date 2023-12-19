@@ -58,14 +58,6 @@ const admin_navs = [
     {
         id: "/admin/manage-thesis",
         value: "Đề tài",
-    },
-    {
-        id: "/admin/manage-term",
-        value: "Đợt đăng ký đề tài",
-    },
-    {
-        id: "/admin/manage-major",
-        value: "Chuyên ngành",
     }
 ]
 const lenturer_navs = [

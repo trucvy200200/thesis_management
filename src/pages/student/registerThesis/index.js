@@ -7,7 +7,9 @@ import { getAllThesis, registerThesis } from "../store/action";
 import { useNavigate } from 'react-router-dom'
 import toast from "react-hot-toast"
 import { logout } from "../../../redux/actions/auth"
-const columns = ({ setIsConfirmOpen, setThesisId }) => [
+import axios from "axios"
+import { configHeader } from "../../../@core/plugin/configHeader";
+const columns = ({ setIsConfirmOpen, setThesisId, setIsConfirmDeleteOpen }) => [
     { field: "code", headerName: "Mã đề tài", width: 150 },
     { field: "title", headerName: "Tên đề tài", width: 250 },
     { field: "description", headerName: "Mô tả", width: 400 },
@@ -26,13 +28,13 @@ const columns = ({ setIsConfirmOpen, setThesisId }) => [
         renderCell: (params) => {
             return (
                 <Box display={"flex"} gap={2} alignItems={"center"}>
-                    {params?.row?.member.find(item => item._id === JSON.parse(localStorage.getItem("userData"))?._id) ? (
+                    {params?.row?.member.find(item => item.id === JSON.parse(localStorage.getItem("userData"))?.idUser) ? (
                         <Button
                             variant="contained bg-danger text-white"
                             size="small"
                             onClick={
                                 () => {
-                                    setIsConfirmOpen(true);
+                                    setIsConfirmDeleteOpen(true);
                                     setThesisId(params?.row?._id)
                                 }
                             }
@@ -69,6 +71,7 @@ function SubTopic() {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false)
     const [thesisId, setThesisId] = useState("")
     useEffect(() => {
         getListTopic();
@@ -85,6 +88,19 @@ function SubTopic() {
             () => { toast.success("Đăng kí thành công"); setIsConfirmOpen(false); navigate('/student/manage-thesis') }
         ))
     };
+
+    const handleCancelTopic = async (id) => {
+        axios.post("/api/cancel-register-thesis", {
+            idThesis: id,
+            idUser: JSON.parse(localStorage.getItem("userData"))?.idUser
+        }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
+            toast.success("Đã hủy đăng ký đề tài")
+            setIsConfirmDeleteOpen(false)
+            getListTopic()
+        }).catch((err) => {
+            toast.error(err?.response?.data.message)
+        })
+    }
     const handleLogoutUser = () => {
         dispatch(logout(
             JSON.parse(localStorage.getItem("userData"))?._id,
@@ -128,7 +144,7 @@ function SubTopic() {
                         *Lưu ý: Sinh viên muốn đề xuất đề tài vui lòng liên hệ với GVHD
                     </Typography>
                     <Box height={300} width={"100%"} mt={2}>
-                        <DataGrid rows={store} columns={columns({ setIsConfirmOpen, setThesisId })} hideFooter={true} getRowId={(row) => row._id} />
+                        <DataGrid rows={store} columns={columns({ setIsConfirmOpen, setThesisId, setIsConfirmDeleteOpen })} hideFooter={true} getRowId={(row) => row._id} />
                     </Box>
                 </>
             )
@@ -139,6 +155,13 @@ function SubTopic() {
                 title="Hộp thoại xác nhận đăng kí đề tài"
                 content="Bạn có chắc chắn đăng ký đề tài này?"
                 handleClose={() => setIsConfirmOpen(false)}
+            />
+            <ConfirmDelete
+                open={isConfirmDeleteOpen}
+                handleOk={() => handleCancelTopic(thesisId)}
+                title="Hộp thoại xác nhận hủy đăng ký đề tài"
+                content="Bạn có chắc chắn hủy đăng ký đề tài này?"
+                handleClose={() => setIsConfirmDeleteOpen(false)}
             />
         </div>
     );

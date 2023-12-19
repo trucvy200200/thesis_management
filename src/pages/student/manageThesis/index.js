@@ -41,18 +41,18 @@ function ManageThesis() {
         params.append("idUser", JSON.parse(localStorage.getItem("userData"))?._id)
         params.append = JSON.parse(localStorage.getItem("userData"))?._id
         await axios.post("/api/submit-task", params, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
-            toast.success(res?.data?.message)
+            toast.success("Nộp bài thành công")
 
         })
     }
-    console.log(taskList)
+
     return (
         <div className="wrapper my-3">
             <Button fullWidth size="large" variant="contained">
                 Quản lý đề tài
             </Button>
             <Box mt={4}>
-                {taskList ? (
+                {taskList.length !== 0 ? (
                     <>
                         <Typography variant="subtitle2">
                             Tên đề tài: {taskList[0]?.title}

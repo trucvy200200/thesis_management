@@ -6,21 +6,21 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import ConfirmDelete from "../../../common/ConfirmDelete";
-import { getColor, getRole } from "../../../../utility/helpers/getRole";
-import { notify } from "../../../../utility/helpers/notify";
 import ModalUpdate from "../../../common/ModalUpdate";
-import SelectMajor from "../../../common/SelectMajor";
-
-function InfoAccount({ data, setList }) {
+import axios from "axios"
+import toast from "react-hot-toast";
+import { configHeader } from "../../../../@core/plugin/configHeader";
+function InfoAccount({ data, setList, getUserList }) {
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
-
+  const [accountDetail, setAccountDetail] = useState({});
   const [idDelete, setIdDelete] = useState("");
   const [idUpdate, setIdUpdate] = useState("");
   const [name, setName] = useState("");
@@ -36,37 +36,25 @@ function InfoAccount({ data, setList }) {
 
   const columns = [
     {
-      field: "id",
+      field: "idUser",
       headerName: "Mã người dùng",
       width: 150,
     },
-    { field: "name", headerName: "Họ tên", width: 150 },
-    { field: "username", headerName: "Username", width: 150 },
+    { field: "name", headerName: "Họ tên", width: 250 },
     {
       field: "email",
       headerName: "Email",
-      width: 150,
+      width: 250,
     },
     {
       field: "major",
       headerName: "Ngành",
-      width: 150,
-      valueGetter: (params) => {
-        return params.value?.name;
-      },
+      width: 250,
     },
     {
       field: "role",
       headerName: "Quyền",
       width: 150,
-      renderCell: (params) => {
-        return (
-          <Chip
-            label={getRole(params.row.role)}
-            color={getColor(params.row.role)}
-          />
-        );
-      },
     },
     {
       field: "",
@@ -92,6 +80,7 @@ function InfoAccount({ data, setList }) {
               onClick={() => {
                 setIsOpenModalUpdate(true);
                 setIdUpdate(params.row._id);
+                getAccountDetail(params.row._id)
               }}
             >
               Cập nhật
@@ -104,57 +93,51 @@ function InfoAccount({ data, setList }) {
 
   const handleDelete = async () => {
     try {
-      // await deleteUser(idDelete);
-      notify("success", "Xóa tài khoản thành công");
-      setIsOpenConfirmDelete(false);
-      setList(data?.filter((e) => e._id !== idDelete));
+      await axios.post("/api/admin/delete-account", { idAccount: idDelete }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
+        .then((res) => {
+          toast.success("Xóa thành công")
+          setIsOpenConfirmDelete(false);
+          setList(data?.filter((e) => e._id !== idDelete));
+        })
+
     } catch (error) {
       throw error;
     }
   };
-
+  const getAccountDetail = (id) => {
+    setAccountDetail(data.find((e) => e._id === id))
+  }
   const handleUpdate = async () => {
-    try {
-      // const res = await update(idUpdate, {
-      //   name,
-      //   password,
-      //   phone,
-      //   birth,
-      //   address,
-      //   major,
-      //   sex,
-      //   role,
-      // });
-
-      // notify("success", "Cập nhật thành công");
-      // const newData = data?.map((i) => {
-      //   if (i._id === idUpdate) return { id: res?.data?._id, ...res?.data };
-      //   else return i;
-      // });
-      // setList(newData);
+    await axios.post("/api/admin/update-by-id", {
+      id: idUpdate,
+      fullName: name,
+      phone: phone,
+      major: major,
+      facility: "Information Technology",
+      major: major,
+      gender: sex,
+      role: role,
+      stClass: "18290301"
+    }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then((res) => {
+      toast.success("Cập nhật thành công")
       setIsOpenModalUpdate(false);
-    } catch (error) {
-      notify("error", error?.response?.data?.message);
-    }
+      getUserList()
+    }).catch((err) => {
+      toast.error(err?.response?.data?.errMessage)
+    })
   };
 
-  // useEffect(() => {
-  //   const getInfoUpdate = async () => {
-  //     const res = await findUser(idUpdate);
-  //     const user = res.data;
-  //     setName(user?.name);
-  //     setPassword(user?.password);
-  //     setPhone(user?.phone);
-  //     setMajor(user?.major?._id);
-  //     setBirth(user?.birth);
-  //     setAddress(user?.address);
-  //     setUsername(user?.username);
-  //     setEmail(user?.email);
-  //     setSex(user?.sex);
-  //     setRole(user?.role);
-  //   };
-  //   idUpdate && getInfoUpdate();
-  // }, [idUpdate]);
+  useEffect(() => {
+    const getInfoUpdate = () => {
+      setName(accountDetail?.name);
+      setPhone(accountDetail?.phone);
+      setMajor(accountDetail?.major);
+      setEmail(accountDetail?.email);
+      setSex(accountDetail?.gender);
+      setRole(accountDetail?.role);
+    };
+    idUpdate && getInfoUpdate();
+  }, [idUpdate]);
 
   return (
     <Box mt={8}>
@@ -162,7 +145,7 @@ function InfoAccount({ data, setList }) {
         DANH SÁCH TÀI KHOẢN
       </Typography>
       <Box height={"70vh"} width={"100%"} mt={4}>
-        <DataGrid rows={data} columns={columns} hideFooter={true} />
+        <DataGrid rows={data} columns={columns} hideFooter={true} getRowId={(row) => row._id} />
       </Box>
       <ConfirmDelete
         open={isOpenConfirmDelete}
@@ -187,19 +170,10 @@ function InfoAccount({ data, setList }) {
           <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Username"
+              label="Chuyên ngành"
               size="small"
-              value={username}
-              disabled
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Password"
-              size="small"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={major}
+              onChange={(e) => setMajor(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
@@ -208,8 +182,23 @@ function InfoAccount({ data, setList }) {
               label="Email"
               size="small"
               value={email}
+              defaultValue={accountDetail?.email || ""}
               disabled
             />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Vai trò"
+              fullWidth
+              size="small"
+              value={role}
+              select
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <MenuItem value={"Student"}>Sinh Viên</MenuItem>
+              <MenuItem value={"Lecturer"}>Giảng Viên</MenuItem>
+              <MenuItem value={"Management"}>Trường bộ môn</MenuItem>
+            </TextField>
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -221,29 +210,6 @@ function InfoAccount({ data, setList }) {
             />
           </Grid>
           <Grid item xs={6}>
-            <SelectMajor
-              value={major}
-              setValue={setMajor}
-              disabled={role === 3}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Ngày sinh"
-              size="small"
-              value={birth}
-              onChange={(e) => setBirth(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Địa chỉ"
-              size="small"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
           </Grid>
           <Grid item xs={6}>
             <RadioGroup
@@ -252,12 +218,12 @@ function InfoAccount({ data, setList }) {
               onChange={(e) => setSex(e.target.value)}
             >
               <FormControlLabel
-                value={1}
+                value={"Male"}
                 control={<Radio size="small" />}
                 label="Nam"
               />
               <FormControlLabel
-                value={0}
+                value={"Female"}
                 control={<Radio size="small" />}
                 label="Nữ"
               />

@@ -60,7 +60,7 @@ function ManageStudentSubmit() {
             idTask: idTask,
             evaluate: assess,
         }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
-            toast.success(res?.data?.message)
+            toast.success("Đánh giá thành công")
             setIsOpenModalUpdate(false)
         }).catch((err) => {
             toast.error(err?.response?.data.message)

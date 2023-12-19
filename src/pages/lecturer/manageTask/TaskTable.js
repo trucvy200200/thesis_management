@@ -72,7 +72,7 @@ function TaskTable({ taskList, idThesis, getListTopic }) {
             taskId: taskId,
             idThesis: idThesis
         }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
-            toast.success(res?.data?.message)
+            toast.success("Xóa thành công")
             getListTopic()
             setIsOpenConfirmDelete(false)
         }).catch((err) => {
@@ -86,7 +86,7 @@ function TaskTable({ taskList, idThesis, getListTopic }) {
             time: convertDateDefault(new Date(value)),
             idThesis: idThesis
         }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
-            toast.success(res?.data?.message)
+            toast.success("Thêm task thành công")
             getListTopic()
             setIsOpenModalUpdate(false)
         }).catch((err) => {
@@ -98,7 +98,7 @@ function TaskTable({ taskList, idThesis, getListTopic }) {
             idTask: taskId,
             evaluate: assess,
         }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
-            toast.success(res?.data?.message)
+            toast.success("Đánh giá thành công")
             getListTopic()
             setIsOpenModalDetail(false)
         }).catch((err) => {

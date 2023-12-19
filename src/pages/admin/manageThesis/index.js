@@ -3,13 +3,23 @@ import { Box, Button, Chip, Grid, TextField, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import ConfirmDelete from "../../../components/common/ConfirmDelete";
 import ModalUpdate from "../../../components/common/ModalUpdate";
-import { notify } from "../../../utility/helpers/notify";
-const data = [{
-    id: 1,
-    title: "Tieu de 1",
-    description: "Mo ta 1",
-    approveByManagement: 1
-}];
+import axios from "axios";
+import toast from "react-hot-toast";
+import { logout } from "../../../redux/actions/auth"
+import { useNavigate } from 'react-router-dom'
+import { getAllThesis } from "../../student/store/action";
+import { useSelector, useDispatch } from "react-redux";
+import { configHeader } from "../../../@core/plugin/configHeader";
+const renderStatus = (status) => {
+    switch (status) {
+        case 0:
+            return "Hoàn thành";
+        case 1:
+            return "Đã duyệt";
+        case 2:
+            return "Chờ duyệt"
+    }
+}
 function ManageThesis() {
     const [listTopic, setListTopic] = useState([]);
     const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
@@ -22,22 +32,25 @@ function ManageThesis() {
     const [description, setDescription] = useState("");
     const [code, setCode] = useState("");
     const [infoTopicUpdate, setInfoTopicUpdate] = useState({});
-
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const store = useSelector(state => state.student?.thesisList)
+    const [loading, setLoading] = useState(false)
     const columns = [
         {
-            field: "id",
+            field: "code",
             headerName: "Mã đề tài",
             width: 150,
         },
-        { field: "title", headerName: "Tên đề tài", width: 150 },
-        { field: "description", headerName: "Mô tả", width: 150 },
+        { field: "title", headerName: "Tên đề tài", width: 250 },
+        { field: "description", headerName: "Mô tả", width: 250 },
         {
-            field: "approveByManagement",
+            field: "status",
             headerName: "Trạng thái",
             width: 200,
             renderCell: (params) => {
                 const label =
-                    params.row.approveByManagement === 0
+                    params.row.status === 2
                         ? "Chưa được phê duyệt"
                         : "Đã được phê duyệt";
                 const color = params.row.approveByManagement === 0 ? "error" : "success";
@@ -77,31 +90,65 @@ function ManageThesis() {
             },
         },
     ];
+    const handleCreateTopic = async () => {
+        const params = {}
+        params.title = title
+        params.description = description
+        params.code = code
+        params.industry = JSON.parse(localStorage.getItem("userData")).facility
+        params.instructor = JSON.stringify([{
+            id: JSON.parse(localStorage.getItem("userData")).idUser,
+            name: JSON.parse(localStorage.getItem("userData")).name,
+            faculty: JSON.parse(localStorage.getItem("userData")).facility,
+        }])
+        params.academic_year = "2017-2021"
+        params.time_start = "03/02/2021"
+        params.time_end = "07/20/2021"
+        params.type = "Capstone project"
+        params.status = 2
+        await axios.post("/api/upload-thesis",
+            params,
+            configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
+            .then((res) => {
+                toast.success("Tạo đề tài thành công")
+            }).catch((err) => {
+                toast.error(err?.response?.data?.thesisData?.errMessage)
+            })
+
+    };
 
     const handleDelete = async () => {
         try {
             // await deleteTopicByManagement(idDelete);
-            notify("success", "Xóa đề tài thành công");
+            // notify("success", "Xóa đề tài thành công");
             setIsOpenConfirmDelete(false);
             setListTopic(listTopic?.filter((e) => e._id !== idDelete));
         } catch (error) {
             throw error;
         }
     };
-
+    useEffect(() => {
+        getListTopic();
+    }, []);
+    const handleLogoutUser = () => {
+        dispatch(logout(
+            JSON.parse(localStorage.getItem("userData"))?._id,
+            setLoading,
+            () => navigate("/login")
+        ))
+        localStorage.removeItem("userData")
+        localStorage.removeItem("token")
+    }
     const getListTopic = async () => {
-        try {
-            // const res = await list();
-            // setListTopic(res.data?.map((e) => ({ id: e._id, ...e })));
-        } catch (error) {
-            console.log(error);
-        }
+        const params = {}
+        params.industry = JSON.parse(localStorage.getItem("userData")).major
+        dispatch(getAllThesis(params, () => handleLogoutUser()))
     };
 
     const handleUpdate = async () => {
         try {
             // await update(idUpdate, { title, description });
-            notify("success", "Cập nhật đề tài thành công");
+            // notify("success", "Cập nhật đề tài thành công");
             setIsOpenModalUpdate(false);
             getListTopic();
         } catch (error) {
@@ -109,9 +156,6 @@ function ManageThesis() {
         }
     };
 
-    // useEffect(() => {
-    //     getListTopic();
-    // }, []);
 
     // useEffect(() => {
     // const getTopicById = async () => {
@@ -138,7 +182,7 @@ function ManageThesis() {
                         Thêm đề tài
                     </Button>
                 </div>
-                <DataGrid rows={data} columns={columns} hideFooter={true} />
+                <DataGrid rows={store} columns={columns} hideFooter={true} getRowId={(row) => row._id} />
             </Box>
             <ConfirmDelete
                 title={"Hủy đề tài"}
@@ -216,7 +260,7 @@ function ManageThesis() {
             <ModalUpdate
                 open={isOpenModalAdd}
                 handleClose={() => setIsOpenModalAdd(false)}
-                // handleOk={handleAdd}
+                handleOk={handleCreateTopic}
                 title={"Thêm đề tài"}
                 titleOk={"Thêm"}
             >

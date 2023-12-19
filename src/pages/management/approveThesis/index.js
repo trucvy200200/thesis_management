@@ -84,7 +84,7 @@ function ApproveSubTopic() {
             browse: "accept",
             idRequest: idThesis
         }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
-            toast.success(res?.data?.dataResponse?.errMessage)
+            toast.success("Duyệt đề tài thành công")
             setIsOpenMdal(false)
             getListTopic()
         })

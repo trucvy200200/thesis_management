@@ -29,12 +29,12 @@ function ManagementSubTopic() {
         params.time_start = "03/02/2021"
         params.time_end = "07/20/2021"
         params.type = "Capstone project"
-        params.status = 1
+        params.status = 2
         await axios.post("/api/upload-thesis",
             params,
             configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
             .then((res) => {
-                toast.success(res?.data?.thesisData?.errMessage)
+                toast.success("Tạo đề tài thành công")
                 handleClear();
             }).catch((err) => {
                 toast.error(err?.response?.data?.thesisData?.errMessage)

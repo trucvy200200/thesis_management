@@ -1,14 +1,16 @@
 import { Box, Button, Grid, TextField, Select, MenuItem, FormLabel } from "@mui/material";
 import React, { useState } from "react";
 import SelectMajor from "../../../common/SelectMajor";
-
-function CreateAccount() {
+import { configHeader } from "../../../../@core/plugin/configHeader";
+import axios from "axios";
+import toast from "react-hot-toast";
+function CreateAccount({ setList, getUserList }) {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState(0);
   const [major, setMajor] = useState(null);
-
+  const [gender, setGender] = useState("");
   const handleReset = () => {
     setName("");
     setCode("");
@@ -18,22 +20,21 @@ function CreateAccount() {
   };
 
   const handleCreateUser = async (e) => {
-    // try {
-    //   e.preventDefault();
-    //   const res = await create({
-    //     name,
-    //     username,
-    //     password,
-    //     email,
-    //     role,
-    //     major,
-    //   });
-    //   notify("success", "Thêm tài khoản thành công");
-    //   setList((prev) => [{ ...res?.data, id: res?.data?._id }, ...prev]);
-    //   handleReset();
-    // } catch (error) {
-    //   notify("error", error?.response?.data?.message);
-    // }
+    e.preventDefault();
+    await axios.post("/api/admin/add-account", {
+      fullName: name,
+      idUser: code,
+      email: email,
+      role: role,
+      major: major,
+      gender: gender
+    }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then((res) => {
+      toast.success("Thêm tài khoản thành công")
+      getUserList()
+      handleReset();
+    }).catch((err) => {
+      toast.error(err?.response?.data?.message)
+    })
   };
 
   return (
@@ -67,6 +68,7 @@ function CreateAccount() {
             <TextField
               fullWidth
               size="small"
+              type="email"
               label="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -82,9 +84,22 @@ function CreateAccount() {
               select
               onChange={(e) => setRole(e.target.value)}
             >
-              <MenuItem value={0}>Sinh Viên</MenuItem>
-              <MenuItem value={1}>Giảng Viên</MenuItem>
-              <MenuItem value={2}>Trường bộ môn</MenuItem>
+              <MenuItem value={"Student"}>Sinh Viên</MenuItem>
+              <MenuItem value={"Lecturer"}>Giảng Viên</MenuItem>
+              <MenuItem value={"Management"}>Trường bộ môn</MenuItem>
+            </TextField>
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Giới tính"
+              fullWidth
+              size="small"
+              value={gender}
+              select
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <MenuItem value={"Male"}>Nam</MenuItem>
+              <MenuItem value={"Female"}>Nữ</MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={6}>

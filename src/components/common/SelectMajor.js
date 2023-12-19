@@ -33,11 +33,9 @@ function SelectMajor({ value, setValue, disabled = false }) {
         onChange={(e) => setValue(e.target.value)}
         disabled={disabled}
       >
-        {listMajor?.map((e) => (
-          <MenuItem value={e._id} key={e._id}>
-            {e?.name}
-          </MenuItem>
-        ))}
+        <MenuItem value={"Information Technology"}>
+          Information Technology
+        </MenuItem>
       </TextField>
     </>
   );

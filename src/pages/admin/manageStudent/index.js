@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from "react";
 import CreateAccount from "../../../components/screens/admin/account-management/CreateAccount";
 import InfoAccount from "../../../components/screens/admin/account-management/InfoAccount";
-
+import axios from "axios"
+import { configHeader } from "../../../@core/plugin/configHeader";
 function ManageStudent() {
     const [listUser, setListUser] = useState([]);
-
-    // useEffect(() => {
-    //     const getListUser = async () => {
-    //         try {
-    //             const res = await list();
-    //             setListUser(
-    //                 res.data
-    //                     ?.map((e) => ({ id: e._id, ...e }))
-    //                     ?.filter((e) => e.username !== "admin")
-    //             );
-    //         } catch (error) {
-    //             throw error;
-    //         }
-    //     };
-    //     getListUser();
-    // }, []);
+    useEffect(() => {
+        getUserList();
+    }, [])
+    const getUserList = async () => {
+        await axios.get("/api/admin/get-all-user", configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then((res) => {
+            setListUser(res.data?.data?.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+        ;
     return (
         <div className="wrapper my-3">
-            <CreateAccount setList={setListUser} />
-            <InfoAccount data={listUser} setList={setListUser} />
+            <CreateAccount setList={setListUser} getUserList={getUserList} />
+            <InfoAccount data={listUser} setList={setListUser} getUserList={getUserList} />
         </div>
     );
 }
