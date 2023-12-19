@@ -104,7 +104,7 @@ function ManageThesis() {
                                                                         size="small"
                                                                         placeholder={item?.result}
                                                                         fullWidth
-                                                                        inputProps={{ accept: "application/pdf, application/msword, .doc,.docx" }}
+                                                                        inputProps={{ accept: "application/pdf" }}
                                                                         onChange={(e) => setFile(e.target.files[0])} />
                                                                 </Grid>
                                                             </Grid>

@@ -108,6 +108,7 @@ function TaskTable({ taskList, idThesis, getListTopic }) {
 
     const downloadPdf = async () => {
         await axios.post("/api/read-task", { idFile: taskId }, { responseType: 'arraybuffer' }).then((res) => {
+            console.log(res)
             const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
             const link = document.createElement('a');
             link.href = url;
@@ -181,7 +182,7 @@ function TaskTable({ taskList, idThesis, getListTopic }) {
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="subtitle2">
-                        Bài nộp: {taskList?.result ? <Link onClick={downloadPdf} target="_blank" download>{taskList?.result}</Link> : "Chưa có bài nộp"}
+                        Bài nộp: {taskList ? <Link onClick={downloadPdf} target="_blank" download>{taskList[0]?.result}</Link> : "Chưa có bài nộp"}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} className="my-3">
