@@ -8,7 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import ModalGuide from "./ModalGuide"
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import { Link } from "react-router-dom"
+
+import axios from "axios"
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -19,7 +20,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const ModalViewPdf = (props) => {
-
+    const downloadPdf = async () => {
+        await axios.post("/api/read-pdf", { idFile: props.thesisId }, { responseType: 'arraybuffer' }).then((res) => {
+            const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'test.pdf');
+            document.body.appendChild(link);
+            link.click();
+        })
+    }
     return (
         <div id="view-hotel">
             <BootstrapDialog
@@ -46,9 +56,12 @@ const ModalViewPdf = (props) => {
                 <DialogContent dividers>
                     <div className="btn">
                         <Button variant="outlined" color="primary"
-                            sx={{ height: "fit-content", fontWeight: "bold" }}>
+                            sx={{ height: "fit-content", fontWeight: "bold" }
+                            }
+                            onClick={downloadPdf} >
                             <FileDownloadOutlinedIcon size={16} />
-                            <Link to={'src/public/1702483222078-987251743-2.pdf'} target="_blank" download>Download</Link>
+                            Download
+                            {/* <Link target="_blank"></Link> */}
                         </Button>
                     </div>
                     <ModalGuide file={props.file} />

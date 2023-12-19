@@ -7,18 +7,8 @@ const columns = ({ setOpen, setThesisId }) => [
     {
         field: "id",
         headerName: "STT",
-        width: 50,
-        valueGetter: (params) => {
-            return params.value;
-        },
-    },
-    {
-        field: "student",
-        headerName: "Người thực hiên",
-        width: 300,
-        valueGetter: (params) => {
-            return params.value?.name;
-        },
+        width: 150,
+        renderCell: (params) => params.api.getAllRowIds().indexOf(params.id) + 1
     },
     {
         field: "academic_year",
@@ -65,12 +55,24 @@ function GuestPreference() {
     const [listTopic, setListTopic] = useState([]);
     const [open, setOpen] = useState(false);
     const [thesisId, setThesisId] = useState("");
-    console.log(listTopic.filter((e) => e._id === thesisId)[0]?.urlSave)
+    const [file, setFile] = useState("");
+
     useEffect(() => {
         axios.post('api/get-reference').then((response) => {
             setListTopic(response.data.referenceData.data)
         })
+
     }, []);
+    useEffect(() => {
+        if (thesisId)
+            readPdf()
+    }, [thesisId])
+    const readPdf = async () => {
+        await axios.post("/api/read-pdf", { idFile: thesisId }, { responseType: 'arraybuffer' }).then((res) => {
+            const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+            setFile(url)
+        })
+    }
     return (
         <div className="wrapper">
             <Button fullWidth size="large" variant="contained" className="my-3">
@@ -81,7 +83,8 @@ function GuestPreference() {
             </Box>
             <ModalViewPdf
                 open={open}
-                file={listTopic?.filter((e) => e._id === thesisId)[0]?.urlSave}
+                file={file}
+                thesisId={thesisId}
                 handleClose={() => setOpen(false)}
             />
         </div>

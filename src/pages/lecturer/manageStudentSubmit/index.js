@@ -4,18 +4,17 @@ import { DataGrid } from "@mui/x-data-grid";
 import contract from "../../../assets/text.pdf"
 import { Link } from "react-router-dom"
 import ModalUpdate from "../../../components/common/ModalUpdate";
+import axios from "axios"
+import toast from "react-hot-toast";
+import { configHeader } from "../../../@core/plugin/configHeader";
 const listTopic = [
     {
-        id: 1,
-        title: "Đè tài 1",
+        _id: 1,
+        mssv: "Đè tài 1",
         description: "Mô tả 1",
-        teacher: {
-            name: "Nguyễn Thanh Thuy",
-        },
-        student: {
-            name: "Nguyễn Thanh Thuy",
-        },
-        dayReivew: "10/10/2022",
+        status: 0,
+        name: "Nguyễn Thanh Thuy",
+        date: "10/10/2022",
     }
 ]
 
@@ -24,6 +23,7 @@ function ManageStudentSubmit() {
     //   const [listTopic, setListTopic] = useState([]);
     const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
     const [assess, setAssess] = useState(null)
+    const [idTask, setIdTask] = useState(null)
     const columns = [
         { field: "mssv", headerName: "MSSV", width: 150 },
         { field: "name", headerName: "Tên sinh viên", width: 250 },
@@ -43,6 +43,7 @@ function ManageStudentSubmit() {
                             onClick={
                                 () => {
                                     setIsOpenModalUpdate(true);
+                                    setIdTask(params.row._id);
                                 }
                             }
                         >
@@ -53,17 +54,29 @@ function ManageStudentSubmit() {
             },
         },
     ];
+
+    const handleOk = () => {
+        axios.post("/api/evaluate-task", {
+            idTask: idTask,
+            evaluate: assess,
+        }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
+            toast.success(res?.data?.message)
+            setIsOpenModalUpdate(false)
+        }).catch((err) => {
+            toast.error(err?.response?.data.message)
+        })
+    }
     return (
         <div className="wrapper my-3">
             <Button fullWidth size="large" variant="contained">
                 Danh sách sinh viên nộp tiến độ
             </Button>
             <Box height={300} width={"100%"} mt={4}>
-                <DataGrid rows={listTopic} columns={columns} />
+                <DataGrid rows={listTopic} columns={columns} getRowId={(row) => row._id} />
             </Box>
             <ModalUpdate
                 open={isOpenModalUpdate}
-                // handleOk={}
+                handleOk={handleOk}
                 titleOk={"Đánh giá"}
                 handleClose={() => setIsOpenModalUpdate(false)}
                 title={"Hộp thoại đánh giá"}>

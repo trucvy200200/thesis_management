@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Chip, Grid, TextField, Typography } from "@mui/material";
-
+import { useNavigate } from 'react-router-dom'
+import toast from "react-hot-toast"
+import { logout } from "../../../redux/actions/auth"
+import { useDispatch, useSelector } from 'react-redux'
 import { DataGrid } from "@mui/x-data-grid";
-
+import { getAllThesis } from "../../student/store/action";
 import ConfirmDelete from "../../../components/common/ConfirmDelete";
 import ModalUpdate from "../../../components/common/ModalUpdate";
 
@@ -17,35 +20,30 @@ function ManageThesis() {
     const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
     const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
     const [currentUser, setCurrentUser] = useState({});
+    const store = useSelector(state => state.student.thesisList)
 
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
     const [idDelete, setIdDelete] = useState("");
     const [idUpdate, setIdUpdate] = useState("");
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [infoTopicUpdate, setInfoTopicUpdate] = useState({});
-    const approveByManagement = 1;
+
+    useEffect(() => {
+        getListTopic();
+    }, []);
+
     const columns = [
         {
-            field: "id",
+            field: "code",
             headerName: "Mã đề tài",
             width: 150,
         },
         { field: "title", headerName: "Tên đề tài", width: 250 },
         { field: "description", headerName: "Mô tả", width: 250 },
-        {
-            field: "approveByManagement",
-            headerName: "Trạng thái",
-            width: 200,
-            renderCell: (params) => {
-                const label =
-                    approveByManagement == 0
-                        ? "Chưa được phê duyệt"
-                        : "Đã được phê duyệt";
-                const color = params.row.approveByManagement == 0 ? "error" : "success";
-                return <Chip label={label} color={color} />;
-            },
-        },
         {
             field: "",
             headerName: "Hành động",
@@ -54,7 +52,7 @@ function ManageThesis() {
                 return (
                     <Box display={"flex"} gap={2} alignItems={"center"}>
                         {
-                            approveByManagement === 0 ?
+                            params.row.status === 2 ?
                                 <div>
                                     <Button
                                         variant="contained"
@@ -82,7 +80,7 @@ function ManageThesis() {
                                     <Button
                                         variant="contained"
                                         size="small"
-                                        href={`/${JSON.parse(localStorage.getItem("userData")).role}/manage-task`}
+                                        href={`/${JSON.parse(localStorage.getItem("userData")).role}/manage-task?id=${params.row._id}`}
                                     >
                                         Chi tiết
                                     </Button>
@@ -96,14 +94,29 @@ function ManageThesis() {
         },
     ];
 
+    const getListTopic = async () => {
+        const params = {}
+        params.industry = JSON.parse(localStorage.getItem("userData")).major
+        params.status = 1
+        dispatch(getAllThesis(params, () => handleLogoutUser()))
+    };
 
+    const handleLogoutUser = () => {
+        dispatch(logout(
+            JSON.parse(localStorage.getItem("userData"))?._id,
+            setLoading,
+            () => navigate("/login")
+        ))
+        localStorage.removeItem("userData")
+        localStorage.removeItem("token")
+    }
     return (
         <div className="wrapper my-3">
             <Button fullWidth size="large" variant="contained">
                 Quản lý đề tài
             </Button>
             <Box height={"70vh"} width={"100%"} mt={4}>
-                <DataGrid rows={listTopic} columns={columns} hideFooter={true} />
+                <DataGrid rows={store} columns={columns} hideFooter={true} getRowId={(row) => row._id} />
             </Box>
             <ConfirmDelete
                 title={"Hủy đề tài"}

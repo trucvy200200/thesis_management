@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import moment from "moment";
-import { notify } from "../../../utility/helpers/notify";
 import { useDispatch, useSelector } from 'react-redux'
 import ConfirmDelete from "../../../components/common/ConfirmDelete";
 import { getAllThesis, registerThesis } from "../store/action";

@@ -26,7 +26,7 @@ const DocumentBlock = styled.div`
   }
 `
 const ModalGuide = (props) => {
-  const term = guide
+  const term = props.file
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
 

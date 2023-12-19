@@ -1,41 +1,40 @@
 import { Button, Box, styled } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import ConfirmDelete from "../../../components/common/ConfirmDelete";
-
-const rows = [
-    {
-        id: 1,
-        teacher: "Ronaldo",
-        title: "Đề tài 1",
-        date: "13/11/2023",
-    },
-    {
-        id: 2,
-        teacher: "Messi",
-        title: "Đề tài 2",
-        date: "13/11/2023",
-    },
-];
+import axios from "axios"
+import { configHeader } from "../../../@core/plugin/configHeader";
+import { getAllThesis } from "../../student/store/action";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../../redux/actions/auth"
+import { useNavigate } from 'react-router-dom'
+import toast from "react-hot-toast";
 
 const ConfirmApprove = styled(ConfirmDelete)({});
 
 function ApproveSubTopic() {
     const [isOpenModal, setIsOpenMdal] = useState(false);
     const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
-
+    const store = useSelector(state => state.student?.thesisList)
+    const [loading, setLoading] = useState(false)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [thesisId, setThesisId] = useState("")
     const columns = [
         {
             field: "id",
             headerName: "STT",
             width: 150,
-            valueGetter: (params) => {
-                return params.value;
-            },
+            renderCell: (params) => params.api.getAllRowIds().indexOf(params.id) + 1
         },
         { field: "title", headerName: "Tiêu đề", width: 250 },
-        { field: "teacher", headerName: "Giáo viên HD", width: 250 },
-        { field: "date", headerName: "Ngày đăng kí", width: 250 },
+        {
+            field: "instructor", headerName: "Giáo viên HD", width: 250,
+            valueGetter: (params) => {
+                return params.value[0].name;
+            }
+        },
+        { field: "description", headerName: "Mô tả", width: 250 },
         {
             field: "",
             headerName: "Action",
@@ -47,7 +46,10 @@ function ApproveSubTopic() {
                             variant="contained"
                             size="small"
                             color="success"
-                            onClick={() => setIsOpenMdal(true)}
+                            onClick={() => {
+                                setIsOpenMdal(true)
+                                setThesisId(params?.row?._id)
+                            }}
                         >
                             Duyệt
                         </Button>
@@ -59,17 +61,46 @@ function ApproveSubTopic() {
             },
         },
     ];
+    useEffect(() => {
+        getListTopic();
+    }, []);
+    const handleLogoutUser = () => {
+        dispatch(logout(
+            JSON.parse(localStorage.getItem("userData"))?._id,
+            setLoading,
+            () => navigate("/login")
+        ))
+        localStorage.removeItem("userData")
+        localStorage.removeItem("token")
+    }
+    const getListTopic = async () => {
+        const params = {}
+        params.industry = JSON.parse(localStorage.getItem("userData")).major
+        params.status = 2
+        dispatch(getAllThesis(params, () => handleLogoutUser()))
+    };
+    const approveThesis = (idThesis) => {
+        axios.post("/api/browse-thesis", {
+            browse: "accept",
+            idRequest: idThesis
+        }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
+            toast.success(res?.data?.dataResponse?.errMessage)
+            setIsOpenMdal(false)
+            getListTopic()
+        })
+    }
     return (
         <div className="wrapper my-3">
             <Button fullWidth size="large" variant="contained">
                 Duyệt đăng kí đề tài
             </Button>
             <Box height={300} width={"100%"} mt={4}>
-                <DataGrid rows={rows} columns={columns} />
+                <DataGrid rows={store} columns={columns} getRowId={(row) => row._id} />
             </Box>
             <ConfirmApprove
                 open={isOpenModal}
                 title={"Hộp thoại xác nhận"}
+                handleOk={() => approveThesis(thesisId)}
                 content={"Bạn có chắc chắn muốn duyệt đề tài này không?"}
                 handleClose={() => setIsOpenMdal(false)}
             />

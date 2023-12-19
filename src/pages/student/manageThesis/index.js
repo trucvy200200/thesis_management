@@ -13,138 +13,148 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useSelector, useDispatch } from "react-redux"
+import { convertDateDefault } from "../../../utility/ConvertDate";
+import toast from "react-hot-toast"
 
-const currentTopic = {
-    id: "1",
-    title: "Tiêu đề 1",
-    description: "Tiêu đề 1",
-}
-const periodList = [{
-    name: "Khởi tạo dự án",
-    time: "14/11/2023"
-},
-{
-    name: "Khởi tạo dự án",
-    time: "14/11/2023"
-},
-{
-    name: "Khởi tạo dự án",
-    time: "14/11/2023"
-}
-]
+import axios from "axios"
+import { configHeader } from "../../../@core/plugin/configHeader";
 function ManageThesis() {
+    const [progress, setProgress] = useState("")
+    const [taskList, setTaskList] = useState({})
+    const [file, setFile] = useState("")
 
-    // const [currentUser, setCurrentUser] = useState({});
-    // const [currentTopic, setCurrentTopic] = useState({});
+    useEffect(() => {
+        getTaskList()
+    }, []);
+    const getTaskList = () => {
+        axios.post("/api/get-task", { idStudent: JSON.parse(localStorage.getItem("userData"))?.idUser },
+            configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
+                setTaskList(res.data?.thesisData?.data)
+            })
+    }
+    const apiSubmitTask = async (id) => {
+        const params = new FormData()
+        params.append("progress", progress)
+        params.append("submit", file)
+        params.append("idTask", id)
+        params.append("idUser", JSON.parse(localStorage.getItem("userData"))?._id)
+        params.append = JSON.parse(localStorage.getItem("userData"))?._id
+        await axios.post("/api/submit-task", params, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0]).then(res => {
+            toast.success(res?.data?.message)
 
-    // useEffect(() => {
-    //     const getCurrentUser = async () => {
-    //         try {
-    //             const id = JSON.parse(localStorage.getItem("user"))._id;
-    //             const res = await findUser(id);
-    //             setCurrentUser(res.data);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     };
-    //     getCurrentUser();
-    // }, []);
-
-    // useEffect(() => {
-    //     const getCurrentTopic = async () => {
-    //         try {
-    //             const res = await findTopicOfStudent(currentUser?._id);
-    //             setCurrentTopic(res.data);
-    //         } catch (error) { }
-    //     };
-    //     currentUser && getCurrentTopic();
-    // }, [currentUser]);
-
-    // console.log(currentTopic);
-
+        })
+    }
+    console.log(taskList)
     return (
         <div className="wrapper my-3">
             <Button fullWidth size="large" variant="contained">
                 Quản lý đề tài
             </Button>
             <Box mt={4}>
-                {currentTopic ? (
+                {taskList ? (
                     <>
                         <Typography variant="subtitle2">
-                            Tên đề tài: {currentTopic?.title}
+                            Tên đề tài: {taskList[0]?.title}
                         </Typography>
                         <Typography variant="subtitle2" mt={2}>
-                            Mô tả đề tài: {currentTopic?.description}
+                            Mô tả đề tài: {taskList[0]?.description}
                         </Typography>
-                        <Box mt={4}>
-                            <Timeline
-                                sx={{
-                                    [`& .${timelineOppositeContentClasses.root}`]: {
-                                        flex: 0.2,
-                                    },
-                                }}
-                            >
-                                {periodList.map((item, index) => (
-                                    <TimelineItem>
-                                        <TimelineOppositeContent color="textSecondary">
-                                            {item.time}
-                                        </TimelineOppositeContent>
-                                        <TimelineSeparator>
-                                            <TimelineDot />
-                                            <TimelineConnector />
-                                        </TimelineSeparator>
-                                        <TimelineContent>
-                                            <Accordion>
-                                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                                    <Typography>Giai đoạn {index + 1}: {item.name}</Typography>
-                                                </AccordionSummary>
-                                                <AccordionDetails>
-                                                    <Box mt={4}>
-                                                        <Typography
-                                                            variant="subtitle1"
-                                                            textAlign={"center"}
-                                                            fontWeight={"bold"}
-                                                        >
-                                                            Báo cáo tiến độ
-                                                        </Typography>
-                                                        <Grid container mt={4}>
-                                                            <Grid item xs={3}>
-                                                                <Typography variant="subtitle2">
-                                                                    Nộp báo cáo:
-                                                                </Typography>
+                        {taskList.length !== 0 ? (
+                            <Box mt={4}>
+                                <Timeline
+                                    sx={{
+                                        [`& .${timelineOppositeContentClasses.root}`]: {
+                                            flex: 0.2,
+                                        },
+                                    }}
+                                >
+                                    {taskList[0]?.tasks && taskList[0].tasks?.map((item, index) => (
+                                        <TimelineItem>
+                                            <TimelineOppositeContent color="textSecondary">
+                                                {convertDateDefault(new Date(item.time))}
+                                            </TimelineOppositeContent>
+                                            <TimelineSeparator>
+                                                <TimelineDot />
+                                                <TimelineConnector />
+                                            </TimelineSeparator>
+                                            <TimelineContent>
+                                                <Accordion>
+                                                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                                        <Typography>Giai đoạn {index + 1}: {item.task}</Typography>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                        <Box mt={4}>
+                                                            <Typography
+                                                                variant="subtitle1"
+                                                                textAlign={"center"}
+                                                                fontWeight={"bold"}
+                                                            >
+                                                                Báo cáo tiến độ
+                                                            </Typography>
+                                                            <Grid container mt={4}>
+                                                                <Grid item xs={3}>
+                                                                    <Typography variant="subtitle2">
+                                                                        Nộp báo cáo:
+                                                                    </Typography>
+                                                                </Grid>
+                                                                <Grid item xs={8}>
+                                                                    <TextField
+                                                                        type="file"
+                                                                        size="small"
+                                                                        placeholder={item?.result}
+                                                                        fullWidth
+                                                                        inputProps={{ accept: "application/pdf, application/msword, .doc,.docx" }}
+                                                                        onChange={(e) => setFile(e.target.files[0])} />
+                                                                </Grid>
                                                             </Grid>
-                                                            <Grid item xs={8}>
-                                                                <TextField type="file" size="small" fullWidth />
+                                                            <Grid container mt={4}>
+                                                                <Grid item xs={3}>
+                                                                    <Typography variant="subtitle2">
+                                                                        Tiến độ:
+                                                                    </Typography>
+                                                                </Grid>
+                                                                <Grid item xs={8}>
+                                                                    <TextField
+                                                                        onChange={(e) => setProgress(e.target.value)}
+                                                                        size="small"
+                                                                        fullWidth
+                                                                        defaultValue={""}
+                                                                    />
+                                                                </Grid>
                                                             </Grid>
-                                                        </Grid>
-                                                        <Grid container mt={4}>
-                                                            <Grid item xs={3}>
-                                                                <Typography variant="subtitle2">
-                                                                    Tiến độ:
-                                                                </Typography>
-                                                            </Grid>
-                                                            <Grid item xs={8}>
-                                                                <TextField size="small" fullWidth />
-                                                            </Grid>
-                                                        </Grid>
-                                                        <Box
-                                                            display={"flex"}
-                                                            justifyContent={"center"}
-                                                            mt={2}
-                                                        >
-                                                            <Button variant="contained" size="small">
-                                                                Cập nhật
-                                                            </Button>
+                                                            <Box
+                                                                display={"flex"}
+                                                                justifyContent={"center"}
+                                                                mt={2}
+                                                            >
+                                                                <Button variant="contained" size="small" onClick={() => apiSubmitTask(item._id)}>
+                                                                    Cập nhật
+                                                                </Button>
+                                                            </Box>
                                                         </Box>
-                                                    </Box>
-                                                </AccordionDetails>
-                                            </Accordion>
-                                        </TimelineContent>
-                                    </TimelineItem>
-                                ))}
+                                                    </AccordionDetails>
+                                                </Accordion>
+                                            </TimelineContent>
+                                        </TimelineItem>
+                                    ))}
 
-                            </Timeline>
-                        </Box>
+                                </Timeline>
+                            </Box>
+                        ) : (
+                            <Box
+                                mt={4}
+                                display={"flex"}
+                                alignItems={"center"}
+                                gap={2}
+                                justifyContent={"center"}
+                                sx={{ cursor: "pointer" }}
+                            >
+                                <Typography variant="subtitle2">
+                                    Hiện tại chưa có task nào
+                                </Typography>
+                            </Box>
+                        )}
                     </>
                 ) : (
                     <Box
@@ -158,7 +168,7 @@ function ManageThesis() {
                         <Typography variant="subtitle2">
                             Hiện tại bạn chưa đăng kí đề tài nào
                         </Typography>
-                        <Button variant="contained" size="small" href="/sub-topic">
+                        <Button variant="contained" size="small" href="/student/register-thesis">
                             Đăng kí
                         </Button>
                     </Box>
