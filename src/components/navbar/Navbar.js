@@ -69,10 +69,10 @@ const lenturer_navs = [
         id: "/lecturer/manage-thesis",
         value: "Quản lý đề tài",
     },
-    {
-        id: "/lecturer/assigned-thesis",
-        value: "Đề tài được phân công",
-    }
+    // {
+    //     id: "/lecturer/assigned-thesis",
+    //     value: "Đề tài được phân công",
+    // }
 ]
 const Navbar = ({ role }) => {
     return (
