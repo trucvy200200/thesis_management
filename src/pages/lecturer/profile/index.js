@@ -29,7 +29,6 @@ const options = () => {
 const Profile = () => {
     const dispatch = useDispatch()
     const [isDisable, setIsDisable] = useState(true)
-    const store = useSelector(state => state.user?.userInfo)
     const [data, setData] = useState(JSON.parse(localStorage.getItem("userData")))
     const [errorGender, setErrorGender] = useState(false)
     const [gender, setGender] = useState(data?.gender || "")

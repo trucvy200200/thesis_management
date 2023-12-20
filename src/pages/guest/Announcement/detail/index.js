@@ -1,27 +1,28 @@
-import { useState } from "react"
-import img4 from "../../../../assets/images/annouce-4.jpg"
-const data = [
-    {
-        id: 1,
-        title: "Kế hoạch đăng ký",
-        detail: "ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.orem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.",
-        createdAt: "2022-11-22",
-        author: "Nguyen Van A",
-        img: img4
-    },
-]
+import { useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
+import axios from "axios"
+import { convertDate } from "../../../../utility/ConvertDate"
 const Detail = () => {
-    const [detail, setDetail] = useState(null)
+    const [detail, setDetail] = useState({})
+    const { id } = useParams()
+    useEffect(() => {
+        getDataById()
 
+    }, [])
+    const getDataById = () => {
+        axios.post('/api/admin/get-announcement-by-id', { id: id }).then((res) => {
+            setDetail(res.data.data.data)
+        })
+    }
     return (
         <>
             <div id="announcement-detail" className="detail">
                 <div className="blog-container">
                     <div className="blog-item">
-                        <h3>{data[0]?.title}</h3>
-                        <img src={data[0]?.img} />
-                        <p>{data[0]?.detail}</p>
-                        <h4 style={{ textAlign: "right" }}>Author: {data[0]?.author} ({data[0]?.createdAt})</h4>
+                        <h3>{detail?.title}</h3>
+                        <img src={`data:image/jpeg;base64,${detail?.imageUrl}`} />
+                        <p>{detail?.description}</p>
+                        <h4 style={{ textAlign: "right" }}>Author: {detail?.author} ({convertDate(detail?.time)})</h4>
                     </div>
                 </div>
             </div>

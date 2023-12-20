@@ -17,6 +17,7 @@ function ApproveSubTopic() {
     const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
     const store = useSelector(state => state.student?.thesisList)
     const [loading, setLoading] = useState(false)
+    const [idDelete, setIdDelete] = useState("")
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [thesisId, setThesisId] = useState("")
@@ -53,7 +54,14 @@ function ApproveSubTopic() {
                         >
                             Duyệt
                         </Button>
-                        <Button variant="contained text-white bg-danger" size="small" onClick={() => setIsOpenConfirmDelete(true)}>
+                        <Button
+                            variant="contained text-white bg-danger"
+                            size="small"
+                            onClick={() => {
+                                setIsOpenConfirmDelete(true)
+                                setIdDelete(params?.row?._id)
+                            }
+                            }>
                             Xóa
                         </Button>
                     </Box>
@@ -64,6 +72,17 @@ function ApproveSubTopic() {
     useEffect(() => {
         getListTopic();
     }, []);
+    const handleDelete = async () => {
+        await axios.post("/api/admin/remove-thesis-by-id", { id: idDelete }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
+            .then(res => {
+                toast.success("Đã hủy đề tài")
+                setIsOpenConfirmDelete(false)
+                getListTopic()
+            }).catch(err => {
+                toast.error(err?.response?.data?.message)
+            })
+
+    };
     const handleLogoutUser = () => {
         dispatch(logout(
             JSON.parse(localStorage.getItem("userData"))?._id,
@@ -106,7 +125,7 @@ function ApproveSubTopic() {
             />
             <ConfirmDelete
                 open={isOpenConfirmDelete}
-                // handleOk={handleDelete}
+                handleOk={handleDelete}
                 handleClose={() => setIsOpenConfirmDelete(false)}
             />
         </div>

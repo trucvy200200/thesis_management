@@ -13,10 +13,10 @@ const navs = [
         id: "/preference",
         value: "Đề tài tham khảo",
     },
-    {
-        id: "/lecturer-list",
-        value: "Thông tin liên hệ",
-    },
+    // {
+    //     id: "/lecturer-list",
+    //     value: "Thông tin liên hệ",
+    // },
 ]
 
 const student_navs = [
@@ -44,10 +44,10 @@ const management_navs = [
         id: "/management/approve-thesis",
         value: "Duyệt đề tài",
     },
-    {
-        id: "/management/assigned-lecturer",
-        value: "Phân GVPB",
-    }
+    // {
+    //     id: "/management/assigned-lecturer",
+    //     value: "Phân GVPB",
+    // }
 ]
 
 const admin_navs = [

@@ -27,9 +27,11 @@ function ManageThesis() {
     const [isOpenModalAdd, setIsOpenModalAdd] = useState(false);
     const [idDelete, setIdDelete] = useState("");
     const [idUpdate, setIdUpdate] = useState("");
-
+    const [thesisDetail, setThesisDetail] = useState({});
     const [title, setTitle] = useState("");
+    const [titleAdd, setTitleAdd] = useState("");
     const [description, setDescription] = useState("");
+    const [descriptionAdd, setDescriptionAdd] = useState("");
     const [code, setCode] = useState("");
     const [infoTopicUpdate, setInfoTopicUpdate] = useState({});
     const dispatch = useDispatch()
@@ -49,11 +51,8 @@ function ManageThesis() {
             headerName: "Trạng thái",
             width: 200,
             renderCell: (params) => {
-                const label =
-                    params.row.status === 2
-                        ? "Chưa được phê duyệt"
-                        : "Đã được phê duyệt";
-                const color = params.row.approveByManagement === 0 ? "error" : "success";
+                const label = renderStatus(params.row.status)
+                const color = params.row.status === 2 ? "warning" : "success";
                 return <Chip label={label} color={color} />;
             },
         },
@@ -70,6 +69,7 @@ function ManageThesis() {
                             onClick={() => {
                                 setIsOpenModalUpdate(true);
                                 setIdUpdate(params.row._id);
+                                geThesisDetail(params.row._id)
                             }}
                         >
                             Sửa
@@ -90,10 +90,13 @@ function ManageThesis() {
             },
         },
     ];
+    const geThesisDetail = (id) => {
+        setThesisDetail(store.find((e) => e._id === id))
+    }
     const handleCreateTopic = async () => {
         const params = {}
-        params.title = title
-        params.description = description
+        params.title = titleAdd
+        params.description = descriptionAdd
         params.code = code
         params.industry = JSON.parse(localStorage.getItem("userData")).facility
         params.instructor = JSON.stringify([{
@@ -111,6 +114,7 @@ function ManageThesis() {
             configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
             .then((res) => {
                 toast.success("Tạo đề tài thành công")
+                setIsOpenModalAdd(false);
             }).catch((err) => {
                 toast.error(err?.response?.data?.thesisData?.errMessage)
             })
@@ -118,15 +122,24 @@ function ManageThesis() {
     };
 
     const handleDelete = async () => {
-        try {
-            // await deleteTopicByManagement(idDelete);
-            // notify("success", "Xóa đề tài thành công");
-            setIsOpenConfirmDelete(false);
-            setListTopic(listTopic?.filter((e) => e._id !== idDelete));
-        } catch (error) {
-            throw error;
-        }
+        await axios.post("/api/admin/remove-thesis-by-id", { id: idDelete }, configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
+            .then(res => {
+                toast.success("Đã hủy đề tài")
+                setIsOpenConfirmDelete(false)
+                getListTopic()
+            }).catch(err => {
+                toast.error(err?.response?.data?.message)
+            })
+
     };
+    useEffect(() => {
+        const getInfoUpdate = () => {
+            setTitle(thesisDetail?.title);
+            setDescription(thesisDetail?.description);
+        };
+        idUpdate && getInfoUpdate();
+    }, [idUpdate]);
+
     useEffect(() => {
         getListTopic();
     }, []);
@@ -146,30 +159,22 @@ function ManageThesis() {
     };
 
     const handleUpdate = async () => {
-        try {
-            // await update(idUpdate, { title, description });
-            // notify("success", "Cập nhật đề tài thành công");
-            setIsOpenModalUpdate(false);
-            getListTopic();
-        } catch (error) {
-            console.log(error);
-        }
+        const params = {}
+        params.id = idUpdate
+        params.title = title
+        params.description = description
+        await axios.post("/api/admin/update-thesis-by-id",
+            params,
+            configHeader(JSON.parse(localStorage.getItem("userData")).token)[0])
+            .then((res) => {
+                toast.success("Chỉnh sửa đề tài thành công")
+                getListTopic()
+                setIsOpenModalUpdate(false);
+            }).catch((err) => {
+                toast.error(err?.response?.data?.thesisData?.errMessage)
+            })
     };
 
-
-    // useEffect(() => {
-    // const getTopicById = async () => {
-    // try {
-    // const res = await findTopic(idUpdate);
-    // setInfoTopicUpdate(res.data);
-    // setTitle(res?.data?.title);
-    // setDescription(res?.data?.description);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     };
-    //     idUpdate && getTopicById();
-    // }, [idUpdate]);
 
     return (
         <div className="wrapper my-3">
@@ -195,7 +200,8 @@ function ManageThesis() {
                 open={isOpenModalUpdate}
                 handleClose={() => setIsOpenModalUpdate(false)}
                 handleOk={handleUpdate}
-                title={"Hộp thoại chi tiết"}
+                title={"Hộp thoại chỉnh sửa đề tài"}
+                titleOk={"Chỉnh sửa"}
             >
                 <Grid container spacing={2} py={2}>
                     <Grid item xs={12}>
@@ -217,43 +223,6 @@ function ManageThesis() {
                             multiline
                             rows={5}
                         />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="subtitle2">
-                            Chuyên ngành: {infoTopicUpdate?.major?.name}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="subtitle2">
-                            Giáo viên hướng dẫn:{" "}
-                            {infoTopicUpdate?.teacher
-                                ? infoTopicUpdate?.teacher?.name
-                                : "Không có"}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="subtitle2">
-                            Sinh viên thực hiện:{" "}
-                            {infoTopicUpdate?.student
-                                ? infoTopicUpdate?.student?.name
-                                : "Không có"}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="subtitle2">
-                            Giáo viên phản biện:{" "}
-                            {infoTopicUpdate?.teacherReview
-                                ? infoTopicUpdate?.teacherReview?.name
-                                : "Không có"}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="subtitle2">
-                            Trạng thái:{" "}
-                            {infoTopicUpdate?.approveByManagement === 1
-                                ? "Đã được phê duyệt"
-                                : "Chưa được phê duyệt"}
-                        </Typography>
                     </Grid>
                 </Grid>
             </ModalUpdate>
@@ -286,8 +255,8 @@ function ManageThesis() {
                             <TextField
                                 fullWidth
                                 size="small"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                value={titleAdd}
+                                onChange={(e) => setTitleAdd(e.target.value)}
                             />
                         </Grid>
                     </Grid>
@@ -300,8 +269,8 @@ function ManageThesis() {
                                 multiline
                                 rows={3}
                                 fullWidth
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                value={descriptionAdd}
+                                onChange={(e) => setDescriptionAdd(e.target.value)}
                             />
                         </Grid>
                     </Grid>

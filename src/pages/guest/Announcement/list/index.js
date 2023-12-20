@@ -1,54 +1,10 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import flagIcon from "../../../../assets/icons/ic_flag.svg"
 import chevronRightIcon from "../../../../assets/icons/ic-chevronRight.svg"
-import img1 from "../../../../assets/images/annouce-1.png"
-import img2 from "../../../../assets/images/annouce-2.png"
-import img3 from "../../../../assets/images/annouce-3.png"
-// const Pagination = loadable(() => import("@/components/Common/Pagination"))
-const data = [
-    {
-        id: 1,
-        title: "Kế hoạch đăng ký",
-        detail: "ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.orem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.",
-        createdAt: "2022-11-22",
-        author: "Nguyen Van A",
-        img: img1
-    },
-    {
-        id: 2,
-        title: "Kế hoạch đăng ký",
-        detail: "ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.",
-        createdAt: "2022-11-22",
-        author: "Nguyen Van A",
-        img: img2
-    },
-    {
-        id: 3,
-        title: "Kế hoạch đăng ký",
-        detail: "ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.",
-        createdAt: "2022-11-22",
-        author: "Nguyen Van A",
-        img: img3
-    },
-    {
-        id: 4,
-        title: "Kế hoạch đăng ký",
-        detail: "ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.",
-        createdAt: "2022-11-22",
-        author: "Nguyen Van A",
-        img: img1
-    },
-    {
-        id: 5,
-        title: "Kế hoạch đăng ký",
-        detail: "ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, quidem.",
-        createdAt: "2022-11-22",
-        author: "Nguyen Van A",
-        img: img2
-    }
-]
+import axios from "axios"
+import { convertDate } from "../../../../utility/ConvertDate"
 const Announcement = () => {
-
+    const [dataList, setDataList] = useState([])
     const handleFlexDirection = (index) => {
         if (index % 2 === 0) {
             return ""
@@ -57,10 +13,11 @@ const Announcement = () => {
             return "flex-row-reverse"
         }
     }
-
-    // const handleNewDetail = (slug) => {
-    //     router.push(`${/type}/slug}`).then()
-    // }
+    useEffect(() => {
+        axios.post('/api/admin/get-announcement-account').then((res) => {
+            setDataList(res.data.data.data)
+        })
+    }, [])
 
     return (
         <div id="Announcement">
@@ -70,27 +27,27 @@ const Announcement = () => {
                         <h3>Announcement</h3>
                         <div className={`w-100 infoContainerLeft`}>
                             <div className="infoCard">
-                                {data?.map((item, index) => {
+                                {dataList?.map((item, index) => {
                                     return (
                                         <div key={index} className="w-100">
                                             <div className={`infoCardItem d-flex ${handleFlexDirection(index)}`}>
                                                 <div className={`infoCardItemImage`}>
-                                                    <img src={item?.img} alt="notifyImg" />
+                                                    <img src={`data:image/jpeg;base64,${item?.imageUrl}`} alt="notifyImg" />
                                                 </div>
                                                 <div className={`infoCardItemContent`}>
                                                     <div className={`w-100 infoCardItemContentHeader d-flex`}>
                                                         <div className={`infoCardItemContentHeaderHosting d-flex`}>
                                                             <img src={flagIcon} alt="icon" />
-                                                            {item?.createdAt}
+                                                            {convertDate(item?.time)}
                                                         </div>
                                                     </div>
                                                     <div className={`infoCardItemContentTitle`}>
                                                         {item?.title}
                                                     </div>
                                                     <div className={`infoCardItemContentDetail`}>
-                                                        {item?.detail}
+                                                        {item?.description}
                                                     </div>
-                                                    <a className={`infoCardItemContentFooter mb-0`} href={`/announcement/${item.id}`}>
+                                                    <a className={`infoCardItemContentFooter mb-0`} href={`/announcement/${item._id}`}>
                                                         Read more
                                                         <img className="mx-1" src={chevronRightIcon} alt={"icon"} />
                                                     </a>
