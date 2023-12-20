@@ -65,7 +65,7 @@ function TaskTable({ taskList, idThesis, getListTopic }) {
     const [value, setValue] = React.useState("");
     const [taskId, setTaskId] = useState("")
     const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false)
-    const [assess, setAssess] = useState(taskList ? taskList[0].evaluate : "")
+    const [assess, setAssess] = useState("")
 
     const handleDelete = () => {
         axios.post("/api/remove-task", {
@@ -177,7 +177,7 @@ function TaskTable({ taskList, idThesis, getListTopic }) {
             >
                 <Grid item xs={6}>
                     <Typography variant="subtitle2">
-                        Báo cáo tiến độ: {taskList[0]?.progress}
+                        Báo cáo tiến độ: {taskList ? taskList[0]?.progress : "Chưa cập nhật"}
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>
